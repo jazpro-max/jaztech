@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gold Orb App Platform</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body class="bg-[#0b0f19] text-white font-sans antialiased select-none">
+
+    <div id="authOverlay" class="fixed inset-0 bg-[#0b0f19] z-[100] flex flex-col justify-center p-6 max-w-md mx-auto border-x border-slate-800">
+        <div class="text-center space-y-2 mb-8">
+            <div class="w-16 h-16 rounded-2xl bg-gradient-to-tr from-amber-600 to-amber-300 flex items-center justify-center font-black text-slate-900 text-2xl mx-auto shadow-xl">GO</div>
+            <h1 class="text-2xl font-black tracking-wider text-amber-400">GOLD ORB PLATFORM</h1>
+            <p class="text-xs text-slate-400" id="authSubtitle">Log in to manage your gold portfolios</p>
+        </div>
+
+        <div id="loginForm" class="space-y-4">
+            <input type="text" id="loginPhone" placeholder="Enter Mobile Wallet Phone Number" class="w-full bg-slate-900 border border-slate-800 rounded-xl p-3 text-sm focus:outline-none focus:border-amber-500">
+            <input type="password" id="loginPassword" placeholder="Enter Secure Account Password" class="w-full bg-slate-900 border border-slate-800 rounded-xl p-3 text-sm focus:outline-none focus:border-amber-500">
+            <button onclick="submitLogin()" class="w-full bg-gradient-to-r from-amber-500 to-amber-600 text-slate-950 font-bold p-3.5 rounded-xl text-sm shadow-lg shadow-amber-500/10">Log In</button>
+            <p class="text-xs text-slate-400 text-center pt-2">Don't have an account? <span onclick="toggleAuthForms(true)" class="text-amber-400 cursor-pointer underline">Register Now</span></p>
+        </div>
+
+        <div id="registerForm" class="space-y-4 hidden">
+            <input type="text" id="regPhone" placeholder="Mobile Wallet Phone Number" class="w-full bg-slate-900 border border-slate-800 rounded-xl p-3 text-sm focus:outline-none focus:border-amber-500">
+            <input type="password" id="regPassword" placeholder="Set Secure Password" class="w-full bg-slate-900 border border-slate-800 rounded-xl p-3 text-sm focus:outline-none focus:border-amber-500">
+            <input type="text" id="regInvite" placeholder="Invitation Code (Optional)" class="w-full bg-slate-900 border border-slate-800 rounded-xl p-3 text-sm focus:outline-none focus:border-amber-500">
+            <button onclick="submitRegistration()" class="w-full bg-gradient-to-r from-emerald-500 to-teal-600 text-white font-bold p-3.5 rounded-xl text-sm">Create New Account</button>
+            <p class="text-xs text-slate-400 text-center pt-2">Already registered? <span onclick="toggleAuthForms(false)" class="text-amber-400 cursor-pointer underline">Back to Login</span></p>
+        </div>
+    </div>
+
+    <div class="max-w-md mx-auto min-h-screen bg-[#111827] shadow-2xl flex flex-col justify-between relative pb-20 border-x border-slate-800">
+        
+        <header class="p-4 flex justify-between items-center bg-[#0b0f19]/90 border-b border-amber-500/20">
+            <div class="flex items-center gap-2">
+                <span class="text-xl font-black tracking-wider bg-gradient-to-r from-amber-400 to-yellow-500 bg-clip-text text-transparent">GOLD ORB</span>
+            </div>
+            <div class="text-xs bg-slate-800 px-3 py-1.5 rounded-full border border-slate-700 text-amber-400" id="topNavUid">ID: --</div>
+        </header>
+
+        <main class="p-4 space-y-6 flex-1 overflow-y-auto">
+            <div id="actionAlert" class="hidden text-center text-xs p-3 rounded-xl border font-semibold transition-all"></div>
+
+            <div id="tab-home" class="tab-content space-y-6">
+                <div class="bg-[#0b0f19] p-4 rounded-2xl border border-slate-800/60 shadow-inner">
+                    <canvas id="trendChart" class="w-full h-28"></canvas>
+                </div>
+
+                <div class="grid grid-cols-2 gap-4">
+                    <div class="bg-gradient-to-b from-amber-500/10 to-amber-600/5 p-4 rounded-2xl border border-amber-500/20 shadow-md">
+                        <span class="text-[11px] text-slate-400 block">Available Balance</span>
+                        <span class="text-xl font-bold text-amber-400 block my-1 h-balance">UGX --</span>
+                        <button onclick="triggerWithdrawal('balance')" class="w-full mt-2 bg-gradient-to-r from-amber-500 to-amber-600 text-slate-950 font-bold text-xs py-2 rounded-xl">Withdrawal</button>
+                    </div>
+                    <div class="bg-gradient-to-b from-rose-500/10 to-rose-600/5 p-4 rounded-2xl border border-rose-500/20 shadow-md">
+                        <span class="text-[11px] text-slate-400 block">Team Commission</span>
+                        <span class="text-xl font-bold text-rose-400 block my-1 h-commission">UGX --</span>
+                        <button onclick="triggerWithdrawal('commission')" class="w-full mt-2 bg-gradient-to-r from-rose-500 to-rose-600 text-white font-bold text-xs py-2 rounded-xl">Withdrawal</button>
+                    </div>
+                </div>
+
+                <div>
+                    <h3 class="text-sm font-bold mb-3 text-slate-400">🎁 Investment Products</h3>
+                    <div class="grid grid-cols-2 gap-4">
+                        <div class="bg-slate-900 rounded-2xl overflow-hidden border border-slate-800 p-3 flex flex-col justify-between text-xs">
+                            <div class="font-bold text-amber-400 text-center text-sm mb-1">High-Purity Gold</div>
+                            <div>Price: <b>300,000 UGX</b></div>
+                            <div>Daily: 16,500 UGX</div>
+                            <button onclick="buyInvestment('High-Purity Gold', 300000, 16500, 1650000)" class="w-full mt-2 bg-slate-800 text-amber-400 text-[11px] font-bold py-2 rounded-lg border border-amber-500/20">Invest Now</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="tab-order" class="tab-content hidden space-y-4">
+                <h2 class="text-lg font-bold">My Equipment Contracts</h2>
+                <div id="ordersListContainer" class="space-y-3"></div>
+            </div>
+
+            <div id="tab-team" class="tab-content hidden space-y-4">
+                <h2 class="text-lg font-bold">Referral Networks</h2>
+                <div class="bg-slate-900 p-5 rounded-2xl border border-slate-800 text-center space-y-3">
+                    <p class="text-xs text-slate-400">Your custom team referral metrics panel code.</p>
+                    <div class="bg-[#0b0f19] p-3 rounded-xl border border-slate-800 flex justify-between items-center font-mono text-xs">
+                        <span id="invitationCodeLabel">GOLD ORB-</span>
+                        <button onclick="alert('Copied!')" class="text-[10px] bg-amber-500 text-slate-950 px-2 py-0.5 rounded font-bold">COPY</button>
+                    </div>
+                    <div class="grid grid-cols-2 gap-4 text-left text-xs">
+                        <div class="bg-[#0b0f19] p-3 rounded-xl"><span>MY TEAM</span><span class="text-xl font-bold block text-white" id="referralCountText">0</span></div>
+                        <div class="bg-[#0b0f19] p-3 rounded-xl"><span>BONUS REWARD</span><span class="text-xl font-bold block text-amber-400 h-commission">UGX --</span></div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="tab-wallet" class="tab-content hidden space-y-4">
+                <h2 class="text-lg font-bold">Wallet Node</h2>
+                <div class="bg-slate-900 p-5 rounded-2xl border border-slate-800 space-y-2 h-balance text-xl text-amber-400 font-bold">UGX --</div>
+            </div>
+
+            <div id="tab-me" class="tab-content hidden space-y-3">
+                <div class="bg-slate-900 p-4 rounded-2xl border border-slate-800 font-bold text-sm" id="profilePhone">User Profile</div>
+                <button onclick="logout()" class="w-full bg-slate-800 p-3 text-xs rounded-xl text-rose-400 border border-rose-500/10 font-bold">Sign Out Account</button>
+            </div>
+        </main>
+
+        <nav class="absolute bottom-0 left-0 right-0 bg-[#0b0f19] border-t border-slate-800 grid grid-cols-5 py-2 text-center text-[10px] text-slate-400">
+            <button onclick="switchTab('home')" id="nav-home" class="nav-btn text-amber-400"><div>🏠</div><span>Home</span></button>
+            <button onclick="switchTab('order')" id="nav-order" class="nav-btn"><div>📈</div><span>Order</span></button>
+            <button onclick="switchTab('team')" id="nav-team" class="nav-btn"><div>👥</div><span>Team</span></button>
+            <button onclick="switchTab('wallet')" id="nav-wallet" class="nav-btn"><div>💳</div><span>Wallet</span></button>
+            <button onclick="switchTab('me')" id="nav-me" class="nav-btn"><div>👤</div><span>Me</span></button>
+        </nav>
+    </div>
+
+    <script>
+        let sessionPhone = localStorage.getItem('userPhone');
+
+        function checkSession() {
+            if (sessionPhone) {
+                document.getElementById('authOverlay').classList.add('hidden');
+                renderServerState();
+            } else {
+                document.getElementById('authOverlay').classList.remove('hidden');
+            }
+        }
+
+        function toggleAuthForms(showRegister) {
+            document.getElementById('loginForm').classList.toggle('hidden', showRegister);
+            document.getElementById('registerForm').classList.toggle('hidden', !showRegister);
+            document.getElementById('authSubtitle').innerText = showRegister ? "Create an account to start earning bonuses" : "Log in to manage your gold portfolios";
+        }
+
+        async function submitRegistration() {
+            const phone = document.getElementById('regPhone').value;
+            const password = document.getElementById('regPassword').value;
+            const inviteCode = document.getElementById('regInvite').value;
+
+            const response = await fetch('/api/register', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ phone, password, inviteCode })
+            });
+            const res = await response.json();
+            alert(res.message);
+            if (res.success) toggleAuthForms(false);
+        }
+
+        async function submitLogin() {
+            const phone = document.getElementById('loginPhone').value;
+            const password = document.getElementById('loginPassword').value;
+
+            const response = await fetch('/api/login', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ phone, password })
+            });
+            const res = await response.json();
+            if (res.success) {
+                localStorage.setItem('userPhone', phone);
+                sessionPhone = phone;
+                checkSession();
+            } else {
+                alert(res.message);
+            }
+        }
+
+        function logout() {
+            localStorage.clear();
+            location.reload();
+        }
+
+        function switchTab(tabId) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+            document.querySelectorAll('.nav-btn').forEach(el => el.classList.remove('text-amber-400'));
+            document.getElementById(`tab-${tabId}`).classList.remove('hidden');
+            document.getElementById(`nav-${tabId}`).classList.add('text-amber-400');
+        }
+
+        async function renderServerState() {
+            if (!sessionPhone) return;
+            const response = await fetch(`/api/user/${sessionPhone}`);
+            const data = await response.json();
+            
+            document.getElementById('topNavUid').innerText = `ID: ${data.user.phone}`;
+            document.getElementById('profilePhone').innerText = `Active Account: ${data.user.phone}`;
+            document.getElementById('invitationCodeLabel').innerText = data.user.invitation_code;
+            document.getElementById('referralCountText').innerText = data.user.referrals_count;
+
+            document.querySelectorAll('.h-balance').forEach(el => el.innerText = `UGX ${data.user.balance.toLocaleString()}`);
+            document.querySelectorAll('.h-commission').forEach(el => el.innerText = `UGX ${data.user.commission.toLocaleString()}`);
+
+            const container = document.getElementById('ordersListContainer');
+            container.innerHTML = "";
+            data.orders.forEach(order => {
+                container.innerHTML += `<div class="bg-slate-900 p-4 rounded-xl border border-slate-800 text-xs"><b>${order.product_name}</b> - Price: UGX ${order.price.toLocaleString()}</div>`;
+            });
+        }
+
+        async function buyInvestment(name, price, daily, total) {
+            const response = await fetch('/api/invest', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ name, price, daily, total, phone: sessionPhone })
+            });
+            const res = await response.json();
+            alert(res.message);
+            renderServerState();
+        }
+
+        async function triggerWithdrawal(type) {
+            const amount = prompt("Enter amount:");
+            if (!amount || isNaN(amount)) return;
+            const response = await fetch('/api/withdraw', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ amount: parseFloat(amount), type, phone: sessionPhone })
+            });
+            const res = await response.json();
+            alert(res.message);
+            renderServerState();
+        }
+
+        new Chart(document.getElementById('trendChart').getContext('2d'), { type: 'line', data: { labels: ['1','2','3'], datasets: [{ data: [10,15,12], borderColor: '#f59e0b', borderWidth: 2, pointRadius: 0 }] }, options: { plugins: { legend: false }, scales: { x: { display: false }, y: { display: false } } } });
+
+        checkSession();
+    </script>
+</body>
+</html>

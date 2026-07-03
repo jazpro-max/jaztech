@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gold Orb - Admin Panel</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+</head>
+<body class="bg-slate-950 text-slate-100 font-sans antialiased p-6">
+
+    <div class="max-w-4xl mx-auto space-y-6">
+        <header class="flex justify-between items-center border-b border-slate-800 pb-4">
+            <div>
+                <h1 class="text-2xl font-black text-amber-400 tracking-wider">GOLD ORB SYSTEM ADMIN</h1>
+                <p class="text-xs text-slate-400">Manage user assets, view system transactions, and manually control balances.</p>
+            </div>
+            <a href="/" class="text-xs bg-slate-800 hover:bg-slate-700 px-4 py-2 rounded-lg font-medium border border-slate-700">View Client Site</a>
+        </header>
+
+        <div class="grid grid-cols-3 gap-4">
+            <div class="bg-slate-900 p-5 rounded-xl border border-slate-800">
+                <span class="text-xs text-slate-400 uppercase tracking-wide">Total Registered Users</span>
+                <div class="text-3xl font-bold mt-1 text-white" id="statUsers">0</div>
+            </div>
+            <div class="bg-slate-900 p-5 rounded-xl border border-slate-800">
+                <span class="text-xs text-slate-400 uppercase tracking-wide">Total Running Investments</span>
+                <div class="text-3xl font-bold mt-1 text-amber-400" id="statOrders">0</div>
+            </div>
+            <div class="bg-slate-900 p-5 rounded-xl border border-slate-800">
+                <span class="text-xs text-slate-400 uppercase tracking-wide">System Security Status</span>
+                <div class="text-3xl font-bold mt-1 text-emerald-400">ACTIVE</div>
+            </div>
+        </div>
+
+        <div class="bg-slate-900 rounded-xl border border-slate-800 overflow-hidden">
+            <div class="p-4 bg-slate-800/50 border-b border-slate-800 font-bold text-sm tracking-wide text-slate-300">User Management Registry</div>
+            <div class="overflow-x-auto">
+                <table class="w-full text-left border-collapse text-xs">
+                    <thead>
+                        <tr class="bg-slate-950/40 border-b border-slate-800 text-slate-400 uppercase text-[10px] tracking-wider">
+                            <th class="p-4">User Phone (ID)</th>
+                            <th class="p-4">Available Balance</th>
+                            <th class="p-4">Team Commission</th>
+                            <th class="p-4">Invites</th>
+                            <th class="p-4 text-right">Manual Override Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="adminUserTableBody" class="divide-y divide-slate-800/50">
+                        </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        async function fetchAdminData() {
+            const response = await fetch('/api/admin/users');
+            const data = await response.json();
+
+            document.getElementById('statUsers').innerText = data.users.length;
+            document.getElementById('statOrders').innerText = data.orders.length;
+
+            const tbody = document.getElementById('adminUserTableBody');
+            tbody.innerHTML = "";
+
+            data.users.forEach(user => {
+                tbody.innerHTML += `
+                    <tr class="hover:bg-slate-800/30 transition">
+                        <td class="p-4 font-mono font-bold text-slate-200">${user.phone}</td>
+                        <td class="p-4 text-amber-400 font-semibold">UGX ${user.balance.toLocaleString()}</td>
+                        <td class="p-4 text-rose-400 font-semibold">UGX ${user.commission.toLocaleString()}</td>
+                        <td class="p-4 text-slate-400">${user.referrals_count} members</td>
+                        <td class="p-4 text-right space-x-2">
+                            <button onclick="editUserBalance('${user.phone}', ${user.balance}, 'balance')" class="bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold px-2.5 py-1 rounded">Edit Balance</button>
+                            <button onclick="editUserBalance('${user.phone}', ${user.commission}, 'commission')" class="bg-rose-600 hover:bg-rose-700 text-white font-bold px-2.5 py-1 rounded">Edit Commission</button>
+                        </td>
+                    </tr>`;
+            });
+        }
+
+        async function editUserBalance(phone, currentVal, type) {
+            const newBalance = prompt(`Set new ${type} for user ${phone}:`, currentVal);
+            if (newBalance === null || isNaN(newBalance)) return;
+
+            const response = await fetch('/api/admin/update-balance', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ phone, newBalance: parseFloat(newBalance), type })
+            });
+            const result = await response.json();
+            
+            if (result.success) {
+                alert(result.message);
+                fetchAdminData(); // refresh display instantly
+            } else {
+                alert("Error modifying records: " + result.error);
+            }
+        }
+
+        // Initialize display configuration state values on boot load
+        fetchAdminData();
+    </script>
+</body>
+</html>
