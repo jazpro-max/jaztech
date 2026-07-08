@@ -2,230 +2,589 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gold Orb App Platform</title>
-    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Gold Orb Platform</title>
+    <style>
+        :root {
+            --bg-main: #060b13;
+            --card-dark: #111823;
+            --gold-gradient: linear-gradient(135deg, #ffd700, #f3a63b, #b87333);
+            --pink-gradient: linear-gradient(135deg, #ff7b91, #ff4757);
+            --blue-card: #151f32;
+            --text-gold: #f1c40f;
+            --text-muted: #8fa0ba;
+            --border-subtle: #1e293b;
+        }
+
+        * {
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background-color: var(--bg-main);
+            color: #ffffff;
+            margin: 0;
+            padding: 0;
+            padding-bottom: 75px; /* Spacing for the bottom sticky navbar */
+            overflow-x: hidden;
+        }
+
+        /* App Header Layout */
+        .app-header {
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: var(--bg-main);
+            border-bottom: 1px solid var(--border-subtle);
+        }
+
+        .brand-title {
+            font-size: 1.3rem;
+            font-weight: 800;
+            letter-spacing: 1px;
+            background: var(--gold-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .user-pill {
+            background: var(--card-dark);
+            border: 1px solid var(--border-subtle);
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            font-weight: 600;
+        }
+
+        /* Fast Start Global Banner */
+        .fast-start-banner {
+            margin: 15px;
+            background: linear-gradient(180deg, #15253e, #0e1a2c);
+            border: 1px solid #1e3a5f;
+            border-radius: 12px;
+            padding: 12px 16px;
+            font-size: 0.85rem;
+            line-height: 1.4;
+            color: #d1dcff;
+        }
+
+        /* Notification Ticker bar */
+        .ticker-bar {
+            margin: 10px 15px;
+            background: rgba(21, 31, 50, 0.6);
+            border-radius: 20px;
+            padding: 8px 15px;
+            font-size: 0.85rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            overflow: hidden;
+            border: 1px solid var(--border-subtle);
+        }
+
+        .ticker-bar span.icon { filter: drop-shadow(0 0 2px var(--text-gold)); }
+
+        /* Dynamic Visual Tabs Container logic */
+        .tab-content {
+            display: none;
+            animation: fadeIn 0.25s ease-in-out forwards;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(4px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Standard Balance Layout Cards */
+        .balance-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin: 15px;
+        }
+
+        .balance-card {
+            border-radius: 16px;
+            padding: 18px 15px;
+            position: relative;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            color: #060b13;
+        }
+
+        .balance-card.gold { background: var(--gold-gradient); }
+        .balance-card.pink { background: var(--pink-gradient); color: #fff; }
+
+        .balance-card .label {
+            font-size: 0.85rem;
+            font-weight: 600;
+            opacity: 0.9;
+            margin-bottom: 6px;
+        }
+
+        .balance-card .amount {
+            font-size: 1.35rem;
+            font-weight: 800;
+            margin-bottom: 12px;
+        }
+
+        .action-inline-btn {
+            background: rgba(6, 11, 19, 0.75);
+            color: #fff;
+            border: none;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        .balance-card.pink .action-inline-btn {
+            background: rgba(255, 255, 255, 0.25);
+        }
+
+        /* 4-Grid Option Links Group */
+        .quick-actions-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+            margin: 15px;
+        }
+
+        .action-item {
+            background: var(--blue-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: 12px;
+            padding: 12px 6px;
+            text-align: center;
+            cursor: pointer;
+        }
+
+        .action-item .icon {
+            font-size: 1.4rem;
+            margin-bottom: 6px;
+            display: block;
+        }
+
+        .action-item .label {
+            font-size: 0.72rem;
+            color: #ffffff;
+            font-weight: 500;
+        }
+
+        /* Chart Module Mocks */
+        .chart-box {
+            margin: 15px;
+            background: var(--card-dark);
+            border: 1px solid var(--border-subtle);
+            border-radius: 14px;
+            padding: 15px;
+        }
+
+        .chart-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+        }
+
+        .chart-trend-down { color: #ff4757; font-weight: bold; }
+
+        /* Investment Product Display Columns */
+        .section-title {
+            margin: 20px 15px 10px 15px;
+            font-size: 1.15rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .products-container {
+            margin: 15px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+
+        .product-card {
+            background: var(--card-dark);
+            border: 1px solid var(--border-subtle);
+            border-radius: 16px;
+            overflow: hidden;
+        }
+
+        .product-banner {
+            height: 90px;
+            background: linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.5)), url('https://images.unsplash.com/photo-1610375461246-83df859d849d?auto=format&fit=crop&w=300&q=80');
+            background-size: cover;
+            background-position: center;
+            padding: 10px;
+            display: flex;
+            align-items: flex-end;
+        }
+
+        .product-title {
+            font-size: 0.85rem;
+            font-weight: bold;
+            color: #fff;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.8);
+        }
+
+        .product-body {
+            padding: 12px;
+        }
+
+        .product-price {
+            font-size: 1.1rem;
+            font-weight: 800;
+            color: var(--text-gold);
+            margin-bottom: 8px;
+        }
+
+        .product-stat {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            margin-bottom: 4px;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .product-stat span { color: #fff; font-weight: 600; }
+
+        .invest-btn {
+            width: 100%;
+            background: var(--blue-card);
+            border: 1px solid #23395b;
+            color: #fff;
+            padding: 8px 0;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 0.85rem;
+            margin-top: 8px;
+            cursor: pointer;
+        }
+
+        /* Order Statistics Header styling */
+        .stats-header-card {
+            background: var(--gold-gradient);
+            margin: 15px;
+            border-radius: 16px;
+            padding: 20px;
+            color: #060b13;
+        }
+
+        .nested-stats-row {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 8px;
+            margin-top: 15px;
+        }
+
+        .nested-stat-box {
+            background: rgba(6, 11, 19, 0.85);
+            border-radius: 10px;
+            padding: 10px 6px;
+            text-align: center;
+            color: #fff;
+        }
+
+        .nested-stat-box .lbl { font-size: 0.65rem; color: var(--text-muted); margin-bottom: 4px;}
+        .nested-stat-box .val { font-size: 0.8rem; font-weight: bold; color: var(--text-gold); }
+
+        /* Commission Structure Cards layout */
+        .commission-flex {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin: 15px;
+        }
+
+        .com-card {
+            border-radius: 14px;
+            padding: 15px 8px;
+            text-align: center;
+            border: 1px solid var(--border-subtle);
+        }
+        .com-card.l1 { background: linear-gradient(180deg, #4c1a05, #1d0f09); border-color: #ff5722; }
+        .com-card.l2 { background: linear-gradient(180deg, #091a3a, #050d1d); border-color: #2196f3; }
+        .com-card.l3 { background: linear-gradient(180deg, #3a2a05, #1d1505); border-color: #ffc107; }
+
+        .level-badge {
+            display: inline-block;
+            padding: 3px 10px;
+            border-radius: 8px;
+            font-size: 0.75rem;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        .l1 .level-badge { background: #ff5722; color: #fff; }
+        .l2 .level-badge { background: #2196f3; color: #fff; }
+        .l3 .level-badge { background: #ffc107; color: #000; }
+
+        .com-desc { font-size: 0.75rem; line-height: 1.3; margin-bottom: 10px; color: #e2e8f0; min-height: 80px;}
+        .com-rate { font-size: 1.1rem; font-weight: 800; color: #fff; }
+
+        /* General Account Utility List Options */
+        .list-menu-item {
+            background: var(--blue-card);
+            margin: 10px 15px;
+            padding: 15px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border: 1px solid var(--border-subtle);
+        }
+
+        .list-menu-item .left-block {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 0.9rem;
+        }
+
+        /* Sticky Bottom Navigation Bar Layout */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 65px;
+            background: #090e16;
+            border-top: 1px solid var(--border-subtle);
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            z-index: 999;
+        }
+
+        .nav-tab {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            color: var(--text-muted);
+            font-size: 0.72rem;
+            font-weight: 500;
+            cursor: pointer;
+            gap: 4px;
+        }
+
+        .nav-tab.active {
+            color: var(--text-gold);
+        }
+
+        .nav-tab .icon {
+            font-size: 1.3rem;
+        }
+
+        /* Modal Overlay for Transactions Form Popup */
+        .modal-overlay {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.85);
+            z-index: 10000;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .modal-box {
+            background: var(--card-dark);
+            border: 1px solid var(--border-subtle);
+            width: 100%;
+            max-width: 360px;
+            border-radius: 16px;
+            padding: 20px;
+        }
+
+        .modal-title {
+            font-size: 1.1rem;
+            font-weight: bold;
+            margin-bottom: 15px;
+            color: var(--text-gold);
+        }
+
+        .form-input {
+            width: 100%;
+            background: var(--bg-main);
+            border: 1px solid var(--border-subtle);
+            padding: 12px;
+            border-radius: 8px;
+            color: #fff;
+            font-size: 1rem;
+            margin-bottom: 15px;
+        }
+
+        .form-submit-btn {
+            width: 100%;
+            background: var(--gold-gradient);
+            color: #000;
+            border: none;
+            padding: 12px;
+            border-radius: 25px;
+            font-weight: bold;
+            font-size: 1rem;
+            cursor: pointer;
+        }
+    </style>
 </head>
-<body class="bg-[#0b0f19] text-white font-sans antialiased select-none">
+<body>
 
-    <div id="authOverlay" class="fixed inset-0 bg-[#0b0f19] z-[100] flex flex-col justify-center p-6 max-w-md mx-auto border-x border-slate-800">
-        <div class="text-center space-y-2 mb-8">
-            <div class="w-16 h-16 rounded-2xl bg-gradient-to-tr from-amber-600 to-amber-300 flex items-center justify-center font-black text-slate-900 text-2xl mx-auto shadow-xl">GO</div>
-            <h1 class="text-2xl font-black tracking-wider text-amber-400">GOLD ORB PLATFORM</h1>
-            <p class="text-xs text-slate-400" id="authSubtitle">Log in to manage your gold portfolios</p>
+    <!-- DYNAMIC CORE TAB: HOME -->
+    <div id="tab-home" class="tab-content active">
+        <div class="app-header">
+            <div class="brand-title">GOLD ORB</div>
+            <div class="user-pill phone-display">700******</div>
         </div>
 
-        <div id="loginForm" class="space-y-4">
-            <input type="text" id="loginPhone" placeholder="Enter Mobile Wallet Phone Number" class="w-full bg-slate-900 border border-slate-800 rounded-xl p-3 text-sm focus:outline-none focus:border-amber-500">
-            <input type="password" id="loginPassword" placeholder="Enter Secure Account Password" class="w-full bg-slate-900 border border-slate-800 rounded-xl p-3 text-sm focus:outline-none focus:border-amber-500">
-            <button onclick="submitLogin()" class="w-full bg-gradient-to-r from-amber-500 to-amber-600 text-slate-950 font-bold p-3.5 rounded-xl text-sm shadow-lg shadow-amber-500/10">Log In</button>
-            <p class="text-xs text-slate-400 text-center pt-2">Don't have an account? <span onclick="toggleAuthForms(true)" class="text-amber-400 cursor-pointer underline">Register Now</span></p>
+        <div class="chart-box">
+            <div class="chart-header">
+                <span style="font-size: 0.9rem; font-weight: bold;">Gold Price Trend (Today)</span>
+                <span class="chart-trend-down">-0.78% (4073.48)</span>
+            </div>
+            <!-- Beautiful inline CSS inline mock vector graph -->
+            <svg viewBox="0 0 300 60" style="width: 100%; height: auto;">
+                <path d="M0,20 Q30,10 60,15 T120,35 T180,25 T240,45 T300,40" fill="none" stroke="#2ed573" stroke-width="2.5"/>
+                <path d="M0,20 Q30,10 60,15 T120,35 T180,25 T240,45 T300,40 L300,60 L0,60 Z" fill="none"/>
+            </svg>
         </div>
 
-        <div id="registerForm" class="space-y-4 hidden">
-            <input type="text" id="regPhone" placeholder="Mobile Wallet Phone Number" class="w-full bg-slate-900 border border-slate-800 rounded-xl p-3 text-sm focus:outline-none focus:border-amber-500">
-            <input type="password" id="regPassword" placeholder="Set Secure Password" class="w-full bg-slate-900 border border-slate-800 rounded-xl p-3 text-sm focus:outline-none focus:border-amber-500">
-            <input type="text" id="regInvite" placeholder="Invitation Code (Optional)" class="w-full bg-slate-900 border border-slate-800 rounded-xl p-3 text-sm focus:outline-none focus:border-amber-500">
-            <button onclick="submitRegistration()" class="w-full bg-gradient-to-r from-emerald-500 to-teal-600 text-white font-bold p-3.5 rounded-xl text-sm">Create New Account</button>
-            <p class="text-xs text-slate-400 text-center pt-2">Already registered? <span onclick="toggleAuthForms(false)" class="text-amber-400 cursor-pointer underline">Back to Login</span></p>
+        <div class="ticker-bar">
+            <span class="icon">📢</span>
+            <marquee scrollamount="4" style="color: #cbd5e1;">076****178 recharge 7,000 UGX • 070****818 withdrawal 15,400 UGX completed successfully</marquee>
         </div>
-    </div>
 
-    <div class="max-w-md mx-auto min-h-screen bg-[#111827] shadow-2xl flex flex-col justify-between relative pb-20 border-x border-slate-800">
+        <div class="balance-row">
+            <div class="balance-card gold">
+                <div class="label">Available balance</div>
+                <div class="amount wallet-balance-txt">UGX 0</div>
+                <button class="action-inline-btn" onclick="openTxModal('Withdrawal')">Withdrawal</button>
+            </div>
+            <div class="balance-card pink">
+                <div class="label">Team commission</div>
+                <div class="amount commission-balance-txt">UGX 0</div>
+                <button class="action-inline-btn" onclick="openTxModal('Withdrawal')">Withdrawal</button>
+            </div>
+        </div>
+
+        <div class="quick-actions-grid">
+            <div class="action-item" onclick="openTxModal('Recharge')">
+                <span class="icon">🛒</span>
+                <div class="label">Recharge</div>
+            </div>
+            <div class="action-item" onclick="openTxModal('Withdrawal')">
+                <span class="icon">🪙</span>
+                <div class="label">Withdrawal</div>
+            </div>
+            <div class="action-item" onclick="alert('Lucky Draw is active every Saturday!')">
+                <span class="icon">💰</span>
+                <div class="label">Lucky draw</div>
+            </div>
+            <div class="action-item" onclick="switchTab('tab-team')">
+                <span class="icon">🎁</span>
+                <div class="label">Free cash</div>
+            </div>
+        </div>
+
+        <div class="section-title">🧰 Popular investment projects</div>
         
-        <header class="p-4 flex justify-between items-center bg-[#0b0f19]/90 border-b border-amber-500/20">
-            <div class="flex items-center gap-2">
-                <span class="text-xl font-black tracking-wider bg-gradient-to-r from-amber-400 to-yellow-500 bg-clip-text text-transparent">GOLD ORB</span>
-            </div>
-            <div class="text-xs bg-slate-800 px-3 py-1.5 rounded-full border border-slate-700 text-amber-400" id="topNavUid">ID: --</div>
-        </header>
-
-        <main class="p-4 space-y-6 flex-1 overflow-y-auto">
-            <div id="actionAlert" class="hidden text-center text-xs p-3 rounded-xl border font-semibold transition-all"></div>
-
-            <div id="tab-home" class="tab-content space-y-6">
-                <div class="bg-[#0b0f19] p-4 rounded-2xl border border-slate-800/60 shadow-inner">
-                    <canvas id="trendChart" class="w-full h-28"></canvas>
-                </div>
-
-                <div class="grid grid-cols-2 gap-4">
-                    <div class="bg-gradient-to-b from-amber-500/10 to-amber-600/5 p-4 rounded-2xl border border-amber-500/20 shadow-md">
-                        <span class="text-[11px] text-slate-400 block">Available Balance</span>
-                        <span class="text-xl font-bold text-amber-400 block my-1 h-balance">UGX --</span>
-                        <button onclick="triggerWithdrawal('balance')" class="w-full mt-2 bg-gradient-to-r from-amber-500 to-amber-600 text-slate-950 font-bold text-xs py-2 rounded-xl">Withdrawal</button>
-                    </div>
-                    <div class="bg-gradient-to-b from-rose-500/10 to-rose-600/5 p-4 rounded-2xl border border-rose-500/20 shadow-md">
-                        <span class="text-[11px] text-slate-400 block">Team Commission</span>
-                        <span class="text-xl font-bold text-rose-400 block my-1 h-commission">UGX --</span>
-                        <button onclick="triggerWithdrawal('commission')" class="w-full mt-2 bg-gradient-to-r from-rose-500 to-rose-600 text-white font-bold text-xs py-2 rounded-xl">Withdrawal</button>
-                    </div>
-                </div>
-
-                <div>
-                    <h3 class="text-sm font-bold mb-3 text-slate-400">🎁 Investment Products</h3>
-                    <div class="grid grid-cols-2 gap-4">
-                        <div class="bg-slate-900 rounded-2xl overflow-hidden border border-slate-800 p-3 flex flex-col justify-between text-xs">
-                            <div class="font-bold text-amber-400 text-center text-sm mb-1">High-Purity Gold</div>
-                            <div>Price: <b>300,000 UGX</b></div>
-                            <div>Daily: 16,500 UGX</div>
-                            <button onclick="buyInvestment('High-Purity Gold', 300000, 16500, 1650000)" class="w-full mt-2 bg-slate-800 text-amber-400 text-[11px] font-bold py-2 rounded-lg border border-amber-500/20">Invest Now</button>
-                        </div>
-                    </div>
+        <div class="products-container">
+            <!-- Product Module 1 -->
+            <div class="product-card">
+                <div class="product-banner"><div class="product-title">High-Purity Gold</div></div>
+                <div class="product-body">
+                    <div class="product-price">300,000 UGX</div>
+                    <div class="product-stat">Daily Income: <span>165,000 UGX</span></div>
+                    <div class="product-stat">Total Return: <span>1,650,000 UGX</span></div>
+                    <button class="invest-btn" onclick="processLeasePurchase('High-Purity Gold', 300000, 165000)">Invest</button>
                 </div>
             </div>
-
-            <div id="tab-order" class="tab-content hidden space-y-4">
-                <h2 class="text-lg font-bold">My Equipment Contracts</h2>
-                <div id="ordersListContainer" class="space-y-3"></div>
-            </div>
-
-            <div id="tab-team" class="tab-content hidden space-y-4">
-                <h2 class="text-lg font-bold">Referral Networks</h2>
-                <div class="bg-slate-900 p-5 rounded-2xl border border-slate-800 text-center space-y-3">
-                    <p class="text-xs text-slate-400">Your custom team referral metrics panel code.</p>
-                    <div class="bg-[#0b0f19] p-3 rounded-xl border border-slate-800 flex justify-between items-center font-mono text-xs">
-                        <span id="invitationCodeLabel">GOLD ORB-</span>
-                        <button onclick="alert('Copied!')" class="text-[10px] bg-amber-500 text-slate-950 px-2 py-0.5 rounded font-bold">COPY</button>
-                    </div>
-                    <div class="grid grid-cols-2 gap-4 text-left text-xs">
-                        <div class="bg-[#0b0f19] p-3 rounded-xl"><span>MY TEAM</span><span class="text-xl font-bold block text-white" id="referralCountText">0</span></div>
-                        <div class="bg-[#0b0f19] p-3 rounded-xl"><span>BONUS REWARD</span><span class="text-xl font-bold block text-amber-400 h-commission">UGX --</span></div>
-                    </div>
+            <!-- Product Module 2 -->
+            <div class="product-card">
+                <div class="product-banner" style="background-image: url('https://images.unsplash.com/photo-1573408301185-9146fe634ad0?auto=format&fit=crop&w=300&q=80')"><div class="product-title">Homogeneous Gold</div></div>
+                <div class="product-body">
+                    <div class="product-price">100,000 UGX</div>
+                    <div class="product-stat">Daily Income: <span>45,000 UGX</span></div>
+                    <div class="product-stat">Total Return: <span>450,000 UGX</span></div>
+                    <button class="invest-btn" onclick="processLeasePurchase('Homogeneous Gold', 100000, 45000)">Invest</button>
                 </div>
             </div>
-
-            <div id="tab-wallet" class="tab-content hidden space-y-4">
-                <h2 class="text-lg font-bold">Wallet Node</h2>
-                <div class="bg-slate-900 p-5 rounded-2xl border border-slate-800 space-y-2 h-balance text-xl text-amber-400 font-bold">UGX --</div>
-            </div>
-
-            <div id="tab-me" class="tab-content hidden space-y-3">
-                <div class="bg-slate-900 p-4 rounded-2xl border border-slate-800 font-bold text-sm" id="profilePhone">User Profile</div>
-                <button onclick="logout()" class="w-full bg-slate-800 p-3 text-xs rounded-xl text-rose-400 border border-rose-500/10 font-bold">Sign Out Account</button>
-            </div>
-        </main>
-
-        <nav class="absolute bottom-0 left-0 right-0 bg-[#0b0f19] border-t border-slate-800 grid grid-cols-5 py-2 text-center text-[10px] text-slate-400">
-            <button onclick="switchTab('home')" id="nav-home" class="nav-btn text-amber-400"><div>🏠</div><span>Home</span></button>
-            <button onclick="switchTab('order')" id="nav-order" class="nav-btn"><div>📈</div><span>Order</span></button>
-            <button onclick="switchTab('team')" id="nav-team" class="nav-btn"><div>👥</div><span>Team</span></button>
-            <button onclick="switchTab('wallet')" id="nav-wallet" class="nav-btn"><div>💳</div><span>Wallet</span></button>
-            <button onclick="switchTab('me')" id="nav-me" class="nav-btn"><div>👤</div><span>Me</span></button>
-        </nav>
+        </div>
     </div>
 
-    <script>
-        let sessionPhone = localStorage.getItem('userPhone');
 
-        function checkSession() {
-            if (sessionPhone) {
-                document.getElementById('authOverlay').classList.add('hidden');
-                renderServerState();
-            } else {
-                document.getElementById('authOverlay').classList.remove('hidden');
-            }
-        }
+    <!-- DYNAMIC CORE TAB: ORDER -->
+    <div id="tab-order" class="tab-content">
+        <div class="app-header"><div class="brand-title">MY ORDERS</div></div>
+        
+        <div class="stats-header-card">
+            <span style="font-weight: bold; font-size: 1.1rem; display:block;">My Equipment Orders</span>
+            <div class="nested-stats-row">
+                <div class="nested-stat-box">
+                    <div class="lbl">Total Orders</div>
+                    <div class="val" id="cnt-orders-lbl">0</div>
+                </div>
+                <div class="nested-stat-box">
+                    <div class="lbl">Total Income</div>
+                    <div class="val" id="income-orders-lbl">UGX 0</div>
+                </div>
+                <div class="nested-stat-box">
+                    <div class="lbl">Total Invested</div>
+                    <div class="val" id="invested-orders-lbl">UGX 0</div>
+                </div>
+            </div>
+        </div>
 
-        function toggleAuthForms(showRegister) {
-            document.getElementById('loginForm').classList.toggle('hidden', showRegister);
-            document.getElementById('registerForm').classList.toggle('hidden', !showRegister);
-            document.getElementById('authSubtitle').innerText = showRegister ? "Create an account to start earning bonuses" : "Log in to manage your gold portfolios";
-        }
+        <div class="section-title">📋 Active Machine Status</div>
+        <div id="active-leases-list-hook">
+            <!-- Injected Dynamically -->
+        </div>
+    </div>
 
-        async function submitRegistration() {
-            const phone = document.getElementById('regPhone').value;
-            const password = document.getElementById('regPassword').value;
-            const inviteCode = document.getElementById('regInvite').value;
 
-            const response = await fetch('/api/register', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ phone, password, inviteCode })
-            });
-            const res = await response.json();
-            alert(res.message);
-            if (res.success) toggleAuthForms(false);
-        }
+    <!-- DYNAMIC CORE TAB: TEAM -->
+    <div id="tab-team" class="tab-content">
+        <div class="app-header"><div class="brand-title">MY COMMISSIONS</div></div>
+        
+        <div class="fast-start-banner" style="text-align: center;">
+            <div style="font-size: 0.8rem; color: var(--text-gold);">YOUR EXCLUSIVE INVITE CODE</div>
+            <div style="font-size: 1.5rem; font-weight: 800; color: #fff; margin: 4px 0;" id="invite-code-hook">000000</div>
+            <button class="action-inline-btn" onclick="navigator.clipboard.writeText(document.getElementById('invite-code-hook').innerText); alert('Copied referral code!');">Copy Code</button>
+        </div>
 
-        async function submitLogin() {
-            const phone = document.getElementById('loginPhone').value;
-            const password = document.getElementById('loginPassword').value;
+        <div class="commission-flex">
+            <div class="com-card l1">
+                <div class="level-badge">L1</div>
+                <div class="com-desc">Direct instant commission on deposits made by your personal referrals.</div>
+                <div class="com-rate">20%</div>
+            </div>
+            <div class="com-card l2">
+                <div class="level-badge">L2</div>
+                <div class="com-desc">Second level for deposits made by members invited by your direct team.</div>
+                <div class="com-rate">2%</div>
+            </div>
+            <div class="com-card l3">
+                <div class="level-badge">L3</div>
+                <div class="com-desc">Third level additional passive income from depth of network.</div>
+                <div class="com-rate">1%</div>
+            </div>
+        </div>
+    </div>
 
-            const response = await fetch('/api/login', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ phone, password })
-            });
-            const res = await response.json();
-            if (res.success) {
-                localStorage.setItem('userPhone', phone);
-                sessionPhone = phone;
-                checkSession();
-            } else {
-                alert(res.message);
-            }
-        }
 
-        function logout() {
-            localStorage.clear();
-            location.reload();
-        }
-
-        function switchTab(tabId) {
-            document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
-            document.querySelectorAll('.nav-btn').forEach(el => el.classList.remove('text-amber-400'));
-            document.getElementById(`tab-${tabId}`).classList.remove('hidden');
-            document.getElementById(`nav-${tabId}`).classList.add('text-amber-400');
-        }
-
-        async function renderServerState() {
-            if (!sessionPhone) return;
-            const response = await fetch(`/api/user/${sessionPhone}`);
-            const data = await response.json();
+    <!-- DYNAMIC CORE TAB: WALLET -->
+    <div id="tab-wallet" class="tab-content">
+        <div class="app-header"><div class="brand-title">ACCOUNT WALLET</div></div>
+        
+        <div class="fast-start-banner" style="background: var(--blue-card);">
+            <div style="color: var(--text-muted); font-size: 0.85rem;">Available Balance</div>
+            <div style="font-size: 1.8rem; font-weight: 800; color: #fff; margin: 5px 0;" class="wallet-balance-txt">UGX 0</div>
             
-            document.getElementById('topNavUid').innerText = `ID: ${data.user.phone}`;
-            document.getElementById('profilePhone').innerText = `Active Account: ${data.user.phone}`;
-            document.getElementById('invitationCodeLabel').innerText = data.user.invitation_code;
-            document.getElementById('referralCountText').innerText = data.user.referrals_count;
-
-            document.querySelectorAll('.h-balance').forEach(el => el.innerText = `UGX ${data.user.balance.toLocaleString()}`);
-            document.querySelectorAll('.h-commission').forEach(el => el.innerText = `UGX ${data.user.commission.toLocaleString()}`);
-
-            const container = document.getElementById('ordersListContainer');
-            container.innerHTML = "";
-            data.orders.forEach(order => {
-                container.innerHTML += `<div class="bg-slate-900 p-4 rounded-xl border border-slate-800 text-xs"><b>${order.product_name}</b> - Price: UGX ${order.price.toLocaleString()}</div>`;
-            });
-        }
-
-        async function buyInvestment(name, price, daily, total) {
-            const response = await fetch('/api/invest', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ name, price, daily, total, phone: sessionPhone })
-            });
-            const res = await response.json();
-            alert(res.message);
-            renderServerState();
-        }
-
-        async function triggerWithdrawal(type) {
-            const amount = prompt("Enter amount:");
-            if (!amount || isNaN(amount)) return;
-            const response = await fetch('/api/withdraw', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ amount: parseFloat(amount), type, phone: sessionPhone })
-            });
-            const res = await response.json();
-            alert(res.message);
-            renderServerState();
-        }
-
-        new Chart(document.getElementById('trendChart').getContext('2d'), { type: 'line', data: { labels: ['1','2','3'], datasets: [{ data: [10,15,12], borderColor: '#f59e0b', borderWidth: 2, pointRadius: 0 }] }, options: { plugins: { legend: false }, scales: { x: { display: false }, y: { display: false } } } });
-
-        checkSession();
-    </script>
-</body>
-</html>
+            <div style="d
