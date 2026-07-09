@@ -1,7 +1,7 @@
 const express = require('express');
 const path = require('path');
-const sqlite3 = require('sqlite3').verbose();
-const session = require('express-session'); // To securely track who is logged in
+const { Pool } = require('pg'); // PostgreSQL client pool
+const session = require('express-session');
 
 const app = express();
 
@@ -20,41 +20,54 @@ app.use(session({
 // Serve static frontend assets cleanly out of your public directory
 app.use(express.static(path.join(__dirname, 'public')));
 
-// 2. Initialize the SQLite3 Database Infrastructure
-const db = new sqlite3.Database('./database.db', (err) => {
-    if (err) {
-        console.error("Database connection fault:", err.message);
-    } else {
-        console.log("Connected to the SQLite database successfully.");
-        
-        // Setup User Management Table
-        db.run(`CREATE TABLE IF NOT EXISTS users (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            phone TEXT UNIQUE,
-            password TEXT,
-            balance REAL DEFAULT 0,
-            commission REAL DEFAULT 0,
-            invitation_code TEXT
-        )`);
-
-        // Setup Active Investment Leases Tracking Table
-        db.run(`CREATE TABLE IF NOT EXISTS orders (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            user_phone TEXT,
-            product_name TEXT,
-            price REAL,
-            daily_income REAL,
-            timestamp DATETIME DEFAULT CURRENT_TIMESTAMP
-        )`);
+// 2. Initialize PostgreSQL Connection Pool
+// Render automatically provides process.env.DATABASE_URL when you attach a PostgreSQL database
+const pool = new Pool({
+    connectionString: process.env.DATABASE_URL,
+    ssl: {
+        rejectUnauthorized: false // Required for secure connections to Render Postgres
     }
 });
+
+// Create tables automatically if they don't exist
+const initializeDatabase = async () => {
+    try {
+        // Setup User Management Table
+        await pool.query(`
+            CREATE TABLE IF NOT EXISTS users (
+                id SERIAL PRIMARY KEY,
+                phone TEXT UNIQUE NOT NULL,
+                password TEXT NOT NULL,
+                balance NUMERIC(15, 2) DEFAULT 0.00,
+                commission NUMERIC(15, 2) DEFAULT 0.00,
+                invitation_code TEXT
+            )
+        `);
+
+        // Setup Active Investment Leases Tracking Table
+        await pool.query(`
+            CREATE TABLE IF NOT EXISTS orders (
+                id SERIAL PRIMARY KEY,
+                user_phone TEXT NOT NULL,
+                product_name TEXT NOT NULL,
+                price NUMERIC(15, 2) NOT NULL,
+                daily_income NUMERIC(15, 2) NOT NULL,
+                timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+            )
+        `);
+        console.log("PostgreSQL Database tables verified/created successfully.");
+    } catch (err) {
+        console.error("Error creating database tables:", err.message);
+    }
+};
+initializeDatabase();
 
 // ==========================================
 // 🔐 AUTHENTICATION ENDPOINTS (For login.html)
 // ==========================================
 
 // Register Account Pipeline
-app.post('/api/auth/register', (req, res) => {
+app.post('/api/auth/register', async (req, res) => {
     const { phone, password } = req.body;
 
     if (!phone || !password) {
@@ -62,38 +75,39 @@ app.post('/api/auth/register', (req, res) => {
     }
 
     const assignedInviteCode = Math.floor(1000000 + Math.random() * 9000000).toString();
-    const query = `INSERT INTO users (phone, password, balance, commission, invitation_code) VALUES (?, ?, 0, 0, ?)`;
+    const query = `INSERT INTO users (phone, password, balance, commission, invitation_code) VALUES ($1, $2, 0, 0, $3)`;
     
-    db.run(query, [phone, password, assignedInviteCode], function(err) {
-        if (err) {
-            if (err.message.includes('UNIQUE')) {
-                return res.json({ success: false, message: "This phone number is already registered!" });
-            }
-            return res.status(500).json({ success: false, message: "Internal server registry error." });
-        }
-        
-        // Log the newly registered user explicitly into the current session tracking state
-        req.session.userPhone = phone;
+    try {
+        await pool.query(query, [phone, password, assignedInviteCode]);
+        req.session.userPhone = phone; // Log them in automatically
         return res.json({ success: true, message: "Account created successfully!" });
-    });
+    } catch (err) {
+        if (err.code === '23505') { // PostgreSQL unique violation error code
+            return res.json({ success: false, message: "This phone number is already registered!" });
+        }
+        console.error(err);
+        return res.status(500).json({ success: false, message: "Internal server registry error." });
+    }
 });
 
 // Authenticate Session Access Login
-app.post('/api/auth/login', (req, res) => {
+app.post('/api/auth/login', async (req, res) => {
     const { phone, password } = req.body;
 
-    db.get(`SELECT * FROM users WHERE phone = ? AND password = ?`, [phone, password], (err, row) => {
-        if (err) {
-            return res.status(500).json({ success: false, message: "System core connection drop." });
-        }
-        if (!row) {
+    try {
+        const result = await pool.query(`SELECT * FROM users WHERE phone = $1 AND password = $2`, [phone, password]);
+        
+        if (result.rows.length === 0) {
             return res.json({ success: false, message: "Incorrect phone number or password." });
         }
 
         // Save active identity reference inside session storage
-        req.session.userPhone = row.phone;
+        req.session.userPhone = result.rows[0].phone;
         return res.json({ success: true, message: "Login successful!" });
-    });
+    } catch (err) {
+        console.error(err);
+        return res.status(500).json({ success: false, message: "System core connection drop." });
+    }
 });
 
 
@@ -102,38 +116,39 @@ app.post('/api/auth/login', (req, res) => {
 // ==========================================
 
 // Pull live profile telemetry for the logged-in user
-app.get('/api/user/profile', (req, res) => {
+app.get('/api/user/profile', async (req, res) => {
     if (!req.session.userPhone) {
         return res.status(401).json({ success: false, message: "Session unauthorized. Re-login required." });
     }
 
     const phone = req.session.userPhone;
 
-    // Fetch user details
-    db.get(`SELECT phone, balance, commission, invitation_code FROM users WHERE phone = ?`, [phone], (err, userRow) => {
-        if (err || !userRow) {
-            return res.status(404).json({ success: false, message: "Profile profile matching error." });
+    try {
+        // Fetch user details
+        const userResult = await pool.query(`SELECT phone, balance, commission, invitation_code FROM users WHERE phone = $1`, [phone]);
+        
+        if (userResult.rows.length === 0) {
+            return res.status(404).json({ success: false, message: "Profile matching error." });
         }
 
-        // Fetch their active physical investment orders
-        db.all(`SELECT product_name, price, daily_income FROM orders WHERE user_phone = ?`, [phone], (err, orderRows) => {
-            if (err) {
-                return res.status(500).json({ success: false, message: "Failed to map user portfolio state." });
-            }
+        // Fetch their active investment orders
+        const ordersResult = await pool.query(`SELECT product_name, price, daily_income FROM orders WHERE user_phone = $1`, [phone]);
 
-            return res.json({
-                phone: userRow.phone,
-                balance: userRow.balance,
-                commission: userRow.commission,
-                invitation_code: userRow.invitation_code,
-                orders: orderRows || []
-            });
+        return res.json({
+            phone: userResult.rows[0].phone,
+            balance: parseFloat(userResult.rows[0].balance),
+            commission: parseFloat(userResult.rows[0].commission),
+            invitation_code: userResult.rows[0].invitation_code,
+            orders: ordersResult.rows || []
         });
-    });
+    } catch (err) {
+        console.error(err);
+        return res.status(500).json({ success: false, message: "Failed to map user portfolio state." });
+    }
 });
 
 // Process a Lease Investment Machine Purchase
-app.post('/api/user/buy-product', (req, res) => {
+app.post('/api/user/buy-product', async (req, res) => {
     if (!req.session.userPhone) {
         return res.status(401).json({ success: false, message: "Unauthenticated action attempt." });
     }
@@ -141,43 +156,52 @@ app.post('/api/user/buy-product', (req, res) => {
     const phone = req.session.userPhone;
     const { productName, price, dailyIncome } = req.body;
 
-    // Look up wallet to verify if they have enough money
-    db.get(`SELECT balance FROM users WHERE phone = ?`, [phone], (err, row) => {
-        if (err || !row) return res.status(500).json({ success: false, message: "Verification processing failed." });
+    try {
+        // Look up wallet to verify if they have enough money
+        const userResult = await pool.query(`SELECT balance FROM users WHERE phone = $1`, [phone]);
+        if (userResult.rows.length === 0) return res.status(500).json({ success: false, message: "Verification processing failed." });
 
-        if (row.balance < price) {
+        const currentBalance = parseFloat(userResult.rows[0].balance);
+        if (currentBalance < price) {
             return res.json({ success: false, message: "Insufficient balance to lease this machine!" });
         }
 
+        // Use standard atomic transactional queries to protect system state matches
+        await pool.query('BEGIN');
+        
         // Deduct balance funds out of wallet data sheet
-        db.run(`UPDATE users SET balance = balance - ? WHERE phone = ?`, [price, phone], (err) => {
-            if (err) return res.status(500).json({ success: false, message: "Failed ledger updates." });
-
-            // Provision investment hardware record mapping
-            db.run(`INSERT INTO orders (user_phone, product_name, price, daily_income) VALUES (?, ?, ?, ?)`, 
-            [phone, productName, price, dailyIncome], (err) => {
-                if (err) return res.status(500).json({ success: false, message: "Hardware binding failure." });
-
-                return res.json({ success: true, message: "Machine leased and processing successfully!" });
-            });
-        });
-    });
+        await pool.query(`UPDATE users SET balance = balance - $1 WHERE phone = $2`, [price, phone]);
+        
+        // Provision investment hardware record mapping
+        await pool.query(`INSERT INTO orders (user_phone, product_name, price, daily_income) VALUES ($1, $2, $3, $4)`, 
+            [phone, productName, price, dailyIncome]);
+        
+        await pool.query('COMMIT');
+        return res.json({ success: true, message: "Machine leased and processing successfully!" });
+    } catch (err) {
+        await pool.query('ROLLBACK');
+        console.error(err);
+        return res.status(500).json({ success: false, message: "Hardware binding failure." });
+    }
 });
 
 // Administrative Adjustments (Recharge / Manual subtracts)
-app.post('/api/admin/update-balance', (req, res) => {
+app.post('/api/admin/update-balance', async (req, res) => {
     const { phone, newBalance, type } = req.body;
     const amount = parseFloat(newBalance);
 
-    let query = `UPDATE users SET balance = balance + ? WHERE phone = ?`;
+    let query = `UPDATE users SET balance = balance + $1 WHERE phone = $2`;
     if (type === 'balance_subtract') {
-        query = `UPDATE users SET balance = balance - ? WHERE phone = ?`;
+        query = `UPDATE users SET balance = balance - $1 WHERE phone = $2`;
     }
 
-    db.run(query, [amount, phone], function(err) {
-        if (err) return res.status(500).json({ success: false, message: "Admin system balance sync failed." });
+    try {
+        await pool.query(query, [amount, phone]);
         return res.json({ success: true, message: "Ledger status balanced successfully!" });
-    });
+    } catch (err) {
+        console.error(err);
+        return res.status(500).json({ success: false, message: "Admin system balance sync failed." });
+    }
 });
 
 // Global Router Catch-all (Redirect default requests gracefully to login)
@@ -187,5 +211,5 @@ app.get('/', (req, res) => {
 
 // Boot up Listener 
 const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => console.log(`Gold Orb Node running flawlessly on port ${PORT}`));
-           
+app.listen(PORT, () => console.log(`Gold Orb PostgreSQL Node server running flawlessly on port ${PORT}`));
+    
