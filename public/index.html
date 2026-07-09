@@ -3,12 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Gold Orb Platform</title>
+    <title>Gold Orb - Dashboard Workspace</title>
     <style>
         :root {
             --bg-main: #060b13;
             --card-dark: #111823;
-            --gold-gradient: linear-gradient(135deg, #ffd700, #f3a63b, #b87333);
+            --gold-gradient: linear-gradient(135deg, #ffd700, #f3a63b);
             --pink-gradient: linear-gradient(135deg, #ff7b91, #ff4757);
             --blue-card: #151f32;
             --text-gold: #f1c40f;
@@ -16,575 +16,198 @@
             --border-subtle: #1e293b;
         }
 
-        * {
-            box-sizing: border-box;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-            -webkit-tap-highlight-color: transparent;
-        }
+        * { box-sizing: border-box; font-family: sans-serif; -webkit-tap-highlight-color: transparent; }
+        body { background-color: var(--bg-main); color: #fff; margin: 0; padding-bottom: 80px; }
 
-        body {
-            background-color: var(--bg-main);
-            color: #ffffff;
-            margin: 0;
-            padding: 0;
-            padding-bottom: 75px; /* Spacing for the bottom sticky navbar */
-            overflow-x: hidden;
-        }
+        /* Navigation Mechanics */
+        .page-view { display: none; }
+        .page-view.active-view { display: block; }
 
-        /* App Header Layout */
+        /* Top Bar App Navigation Header */
         .app-header {
-            padding: 15px 20px;
+            padding: 15px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            background: var(--bg-main);
             border-bottom: 1px solid var(--border-subtle);
-        }
-
-        .brand-title {
-            font-size: 1.3rem;
-            font-weight: 800;
-            letter-spacing: 1px;
-            background: var(--gold-gradient);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-
-        .user-pill {
             background: var(--card-dark);
-            border: 1px solid var(--border-subtle);
-            padding: 6px 14px;
-            border-radius: 20px;
-            font-size: 0.85rem;
-            color: var(--text-muted);
-            font-weight: 600;
         }
+        .brand-title { font-weight: 900; background: var(--gold-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
 
-        /* Fast Start Global Banner */
-        .fast-start-banner {
-            margin: 15px;
-            background: linear-gradient(180deg, #15253e, #0e1a2c);
-            border: 1px solid #1e3a5f;
-            border-radius: 12px;
-            padding: 12px 16px;
-            font-size: 0.85rem;
-            line-height: 1.4;
-            color: #d1dcff;
-        }
+        /* Layout Architecture Utilities */
+        .balance-card-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; padding: 15px; }
+        .balance-box { padding: 15px; border-radius: 12px; color: #000; font-weight: bold; }
+        .balance-box.gold { background: var(--gold-gradient); }
+        .balance-box.pink { background: var(--pink-gradient); color: #fff; }
+        .balance-box .title { font-size: 0.8rem; opacity: 0.8; }
+        .balance-box .val { font-size: 1.2rem; margin: 5px 0 10px 0; }
 
-        /* Notification Ticker bar */
-        .ticker-bar {
-            margin: 10px 15px;
-            background: rgba(21, 31, 50, 0.6);
-            border-radius: 20px;
-            padding: 8px 15px;
-            font-size: 0.85rem;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            overflow: hidden;
-            border: 1px solid var(--border-subtle);
-        }
+        .btn-action { background: rgba(0,0,0,0.6); color: #fff; border: none; padding: 6px 12px; border-radius: 20px; font-size: 0.75rem; cursor: pointer; }
+        .pink .btn-action { background: rgba(255,255,255,0.2); }
 
-        .ticker-bar span.icon { filter: drop-shadow(0 0 2px var(--text-gold)); }
+        .list-group-item { background: var(--card-dark); margin: 10px 15px; padding: 15px; border-radius: 12px; border: 1px solid var(--border-subtle); display: flex; justify-content: space-between; align-items: center;}
 
-        /* Dynamic Visual Tabs Container logic */
-        .tab-content {
-            display: none;
-            animation: fadeIn 0.25s ease-in-out forwards;
-        }
-
-        .tab-content.active {
-            display: block;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(4px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        /* Standard Balance Layout Cards */
-        .balance-row {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 12px;
-            margin: 15px;
-        }
-
-        .balance-card {
-            border-radius: 16px;
-            padding: 18px 15px;
-            position: relative;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-            color: #060b13;
-        }
-
-        .balance-card.gold { background: var(--gold-gradient); }
-        .balance-card.pink { background: var(--pink-gradient); color: #fff; }
-
-        .balance-card .label {
-            font-size: 0.85rem;
-            font-weight: 600;
-            opacity: 0.9;
-            margin-bottom: 6px;
-        }
-
-        .balance-card .amount {
-            font-size: 1.35rem;
-            font-weight: 800;
-            margin-bottom: 12px;
-        }
-
-        .action-inline-btn {
-            background: rgba(6, 11, 19, 0.75);
-            color: #fff;
-            border: none;
-            padding: 6px 14px;
-            border-radius: 20px;
-            font-size: 0.8rem;
-            font-weight: bold;
-            cursor: pointer;
-        }
-        .balance-card.pink .action-inline-btn {
-            background: rgba(255, 255, 255, 0.25);
-        }
-
-        /* 4-Grid Option Links Group */
-        .quick-actions-grid {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 10px;
-            margin: 15px;
-        }
-
-        .action-item {
-            background: var(--blue-card);
-            border: 1px solid var(--border-subtle);
-            border-radius: 12px;
-            padding: 12px 6px;
-            text-align: center;
-            cursor: pointer;
-        }
-
-        .action-item .icon {
-            font-size: 1.4rem;
-            margin-bottom: 6px;
-            display: block;
-        }
-
-        .action-item .label {
-            font-size: 0.72rem;
-            color: #ffffff;
-            font-weight: 500;
-        }
-
-        /* Chart Module Mocks */
-        .chart-box {
-            margin: 15px;
-            background: var(--card-dark);
-            border: 1px solid var(--border-subtle);
-            border-radius: 14px;
-            padding: 15px;
-        }
-
-        .chart-header {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 10px;
-        }
-
-        .chart-trend-down { color: #ff4757; font-weight: bold; }
-
-        /* Investment Product Display Columns */
-        .section-title {
-            margin: 20px 15px 10px 15px;
-            font-size: 1.15rem;
-            font-weight: 700;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-        }
-
-        .products-container {
-            margin: 15px;
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 12px;
-        }
-
-        .product-card {
-            background: var(--card-dark);
-            border: 1px solid var(--border-subtle);
-            border-radius: 16px;
-            overflow: hidden;
-        }
-
-        .product-banner {
-            height: 90px;
-            background: linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.5)), url('https://images.unsplash.com/photo-1610375461246-83df859d849d?auto=format&fit=crop&w=300&q=80');
-            background-size: cover;
-            background-position: center;
-            padding: 10px;
-            display: flex;
-            align-items: flex-end;
-        }
-
-        .product-title {
-            font-size: 0.85rem;
-            font-weight: bold;
-            color: #fff;
-            text-shadow: 0 2px 4px rgba(0,0,0,0.8);
-        }
-
-        .product-body {
-            padding: 12px;
-        }
-
-        .product-price {
-            font-size: 1.1rem;
-            font-weight: 800;
-            color: var(--text-gold);
-            margin-bottom: 8px;
-        }
-
-        .product-stat {
-            font-size: 0.75rem;
-            color: var(--text-muted);
-            margin-bottom: 4px;
-            display: flex;
-            justify-content: space-between;
-        }
-
-        .product-stat span { color: #fff; font-weight: 600; }
-
-        .invest-btn {
-            width: 100%;
-            background: var(--blue-card);
-            border: 1px solid #23395b;
-            color: #fff;
-            padding: 8px 0;
-            border-radius: 20px;
-            font-weight: bold;
-            font-size: 0.85rem;
-            margin-top: 8px;
-            cursor: pointer;
-        }
-
-        /* Order Statistics Header styling */
-        .stats-header-card {
-            background: var(--gold-gradient);
-            margin: 15px;
-            border-radius: 16px;
-            padding: 20px;
-            color: #060b13;
-        }
-
-        .nested-stats-row {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 8px;
-            margin-top: 15px;
-        }
-
-        .nested-stat-box {
-            background: rgba(6, 11, 19, 0.85);
-            border-radius: 10px;
-            padding: 10px 6px;
-            text-align: center;
-            color: #fff;
-        }
-
-        .nested-stat-box .lbl { font-size: 0.65rem; color: var(--text-muted); margin-bottom: 4px;}
-        .nested-stat-box .val { font-size: 0.8rem; font-weight: bold; color: var(--text-gold); }
-
-        /* Commission Structure Cards layout */
-        .commission-flex {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 10px;
-            margin: 15px;
-        }
-
-        .com-card {
-            border-radius: 14px;
-            padding: 15px 8px;
-            text-align: center;
-            border: 1px solid var(--border-subtle);
-        }
-        .com-card.l1 { background: linear-gradient(180deg, #4c1a05, #1d0f09); border-color: #ff5722; }
-        .com-card.l2 { background: linear-gradient(180deg, #091a3a, #050d1d); border-color: #2196f3; }
-        .com-card.l3 { background: linear-gradient(180deg, #3a2a05, #1d1505); border-color: #ffc107; }
-
-        .level-badge {
-            display: inline-block;
-            padding: 3px 10px;
-            border-radius: 8px;
-            font-size: 0.75rem;
-            font-weight: bold;
-            margin-bottom: 10px;
-        }
-        .l1 .level-badge { background: #ff5722; color: #fff; }
-        .l2 .level-badge { background: #2196f3; color: #fff; }
-        .l3 .level-badge { background: #ffc107; color: #000; }
-
-        .com-desc { font-size: 0.75rem; line-height: 1.3; margin-bottom: 10px; color: #e2e8f0; min-height: 80px;}
-        .com-rate { font-size: 1.1rem; font-weight: 800; color: #fff; }
-
-        /* General Account Utility List Options */
-        .list-menu-item {
-            background: var(--blue-card);
-            margin: 10px 15px;
-            padding: 15px;
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            border: 1px solid var(--border-subtle);
-        }
-
-        .list-menu-item .left-block {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            font-size: 0.9rem;
-        }
-
-        /* Sticky Bottom Navigation Bar Layout */
-        .bottom-nav {
+        /* Persistent Navigation Fixed Bar Footer Layout */
+        .bottom-nav-bar {
             position: fixed;
-            bottom: 0;
-            left: 0;
-            right: 0;
+            bottom: 0; left: 0; right: 0;
             height: 65px;
             background: #090e16;
             border-top: 1px solid var(--border-subtle);
             display: grid;
-            grid-template-columns: repeat(5, 1fr);
-            z-index: 999;
+            grid-template-columns: repeat(4, 1fr);
+            z-index: 9999;
         }
-
-        .nav-tab {
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            color: var(--text-muted);
-            font-size: 0.72rem;
-            font-weight: 500;
-            cursor: pointer;
-            gap: 4px;
-        }
-
-        .nav-tab.active {
-            color: var(--text-gold);
-        }
-
-        .nav-tab .icon {
-            font-size: 1.3rem;
-        }
-
-        /* Modal Overlay for Transactions Form Popup */
-        .modal-overlay {
-            position: fixed;
-            top: 0; left: 0; right: 0; bottom: 0;
-            background: rgba(0,0,0,0.85);
-            z-index: 10000;
-            display: none;
-            align-items: center;
-            justify-content: center;
-            padding: 20px;
-        }
-
-        .modal-box {
-            background: var(--card-dark);
-            border: 1px solid var(--border-subtle);
-            width: 100%;
-            max-width: 360px;
-            border-radius: 16px;
-            padding: 20px;
-        }
-
-        .modal-title {
-            font-size: 1.1rem;
-            font-weight: bold;
-            margin-bottom: 15px;
-            color: var(--text-gold);
-        }
-
-        .form-input {
-            width: 100%;
-            background: var(--bg-main);
-            border: 1px solid var(--border-subtle);
-            padding: 12px;
-            border-radius: 8px;
-            color: #fff;
-            font-size: 1rem;
-            margin-bottom: 15px;
-        }
-
-        .form-submit-btn {
-            width: 100%;
-            background: var(--gold-gradient);
-            color: #000;
-            border: none;
-            padding: 12px;
-            border-radius: 25px;
-            font-weight: bold;
-            font-size: 1rem;
-            cursor: pointer;
-        }
+        .nav-item { display: flex; flex-direction: column; justify-content: center; align-items: center; color: var(--text-muted); font-size: 0.75rem; cursor: pointer; }
+        .nav-item.active-nav { color: var(--text-gold); font-weight: bold; }
+        .nav-item .icon { font-size: 1.2rem; margin-bottom: 2px; }
     </style>
 </head>
 <body>
 
-    <!-- DYNAMIC CORE TAB: HOME -->
-    <div id="tab-home" class="tab-content active">
+    <!-- VIEW 1: HOME PAGE -->
+    <div id="view-home" class="page-view active-view">
         <div class="app-header">
-            <div class="brand-title">GOLD ORB</div>
-            <div class="user-pill phone-display">700******</div>
+            <div class="brand-title">GOLD ORB HOME</div>
+            <div style="font-size: 0.85rem; color: var(--text-muted);" class="user-phone">070***</div>
         </div>
-
-        <div class="chart-box">
-            <div class="chart-header">
-                <span style="font-size: 0.9rem; font-weight: bold;">Gold Price Trend (Today)</span>
-                <span class="chart-trend-down">-0.78% (4073.48)</span>
-            </div>
-            <!-- Beautiful inline CSS inline mock vector graph -->
-            <svg viewBox="0 0 300 60" style="width: 100%; height: auto;">
-                <path d="M0,20 Q30,10 60,15 T120,35 T180,25 T240,45 T300,40" fill="none" stroke="#2ed573" stroke-width="2.5"/>
-                <path d="M0,20 Q30,10 60,15 T120,35 T180,25 T240,45 T300,40 L300,60 L0,60 Z" fill="none"/>
-            </svg>
-        </div>
-
-        <div class="ticker-bar">
-            <span class="icon">📢</span>
-            <marquee scrollamount="4" style="color: #cbd5e1;">076****178 recharge 7,000 UGX • 070****818 withdrawal 15,400 UGX completed successfully</marquee>
-        </div>
-
-        <div class="balance-row">
-            <div class="balance-card gold">
-                <div class="label">Available balance</div>
-                <div class="amount wallet-balance-txt">UGX 0</div>
-                <button class="action-inline-btn" onclick="openTxModal('Withdrawal')">Withdrawal</button>
-            </div>
-            <div class="balance-card pink">
-                <div class="label">Team commission</div>
-                <div class="amount commission-balance-txt">UGX 0</div>
-                <button class="action-inline-btn" onclick="openTxModal('Withdrawal')">Withdrawal</button>
-            </div>
-        </div>
-
-        <div class="quick-actions-grid">
-            <div class="action-item" onclick="openTxModal('Recharge')">
-                <span class="icon">🛒</span>
-                <div class="label">Recharge</div>
-            </div>
-            <div class="action-item" onclick="openTxModal('Withdrawal')">
-                <span class="icon">🪙</span>
-                <div class="label">Withdrawal</div>
-            </div>
-            <div class="action-item" onclick="alert('Lucky Draw is active every Saturday!')">
-                <span class="icon">💰</span>
-                <div class="label">Lucky draw</div>
-            </div>
-            <div class="action-item" onclick="switchTab('tab-team')">
-                <span class="icon">🎁</span>
-                <div class="label">Free cash</div>
-            </div>
-        </div>
-
-        <div class="section-title">🧰 Popular investment projects</div>
         
-        <div class="products-container">
-            <!-- Product Module 1 -->
-            <div class="product-card">
-                <div class="product-banner"><div class="product-title">High-Purity Gold</div></div>
-                <div class="product-body">
-                    <div class="product-price">300,000 UGX</div>
-                    <div class="product-stat">Daily Income: <span>165,000 UGX</span></div>
-                    <div class="product-stat">Total Return: <span>1,650,000 UGX</span></div>
-                    <button class="invest-btn" onclick="processLeasePurchase('High-Purity Gold', 300000, 165000)">Invest</button>
-                </div>
+        <div class="balance-card-grid">
+            <div class="balance-box gold">
+                <div class="title">Available Balance</div>
+                <div class="val wallet-lbl">UGX 0</div>
+                <button class="btn-action" onclick="switchRoute('view-wallet')">Withdraw</button>
             </div>
-            <!-- Product Module 2 -->
-            <div class="product-card">
-                <div class="product-banner" style="background-image: url('https://images.unsplash.com/photo-1573408301185-9146fe634ad0?auto=format&fit=crop&w=300&q=80')"><div class="product-title">Homogeneous Gold</div></div>
-                <div class="product-body">
-                    <div class="product-price">100,000 UGX</div>
-                    <div class="product-stat">Daily Income: <span>45,000 UGX</span></div>
-                    <div class="product-stat">Total Return: <span>450,000 UGX</span></div>
-                    <button class="invest-btn" onclick="processLeasePurchase('Homogeneous Gold', 100000, 45000)">Invest</button>
-                </div>
+            <div class="balance-box pink">
+                <div class="title">Team Commissions</div>
+                <div class="val commission-lbl">UGX 0</div>
+                <button class="btn-action" onclick="switchRoute('view-wallet')">Claim</button>
             </div>
+        </div>
+
+        <div style="padding: 15px; font-weight: bold; color: var(--text-gold);">🔥 Investment Leases Available</div>
+        <div class="list-group-item">
+            <div>
+                <strong>High-Purity Gold Machine</strong>
+                <div style="color: var(--text-muted); font-size:0.8rem; margin-top:3px;">Cost: 300,000 UGX | Income: 165,000/Day</div>
+            </div>
+            <button class="btn-action" style="background:var(--gold-gradient); color:#000;" onclick="buyProduct('High-Purity Gold', 300000, 165000)">Rent</button>
         </div>
     </div>
 
-
-    <!-- DYNAMIC CORE TAB: ORDER -->
-    <div id="tab-order" class="tab-content">
-        <div class="app-header"><div class="brand-title">MY ORDERS</div></div>
-        
-        <div class="stats-header-card">
-            <span style="font-weight: bold; font-size: 1.1rem; display:block;">My Equipment Orders</span>
-            <div class="nested-stats-row">
-                <div class="nested-stat-box">
-                    <div class="lbl">Total Orders</div>
-                    <div class="val" id="cnt-orders-lbl">0</div>
-                </div>
-                <div class="nested-stat-box">
-                    <div class="lbl">Total Income</div>
-                    <div class="val" id="income-orders-lbl">UGX 0</div>
-                </div>
-                <div class="nested-stat-box">
-                    <div class="lbl">Total Invested</div>
-                    <div class="val" id="invested-orders-lbl">UGX 0</div>
-                </div>
-            </div>
+    <!-- VIEW 2: ORDER PAGE -->
+    <div id="view-orders" class="page-view">
+        <div class="app-header"><div class="brand-title">ACTIVE HARDWARE LEASES</div></div>
+        <div style="padding:20px; text-align:center; color: var(--text-muted);" id="empty-orders-state">
+            No active machine investments found. Use the Home section to spin up your mining lease!
         </div>
+        <div id="orders-mount-container"></div>
+    </div>
 
-        <div class="section-title">📋 Active Machine Status</div>
-        <div id="active-leases-list-hook">
-            <!-- Injected Dynamically -->
+    <!-- VIEW 3: TEAM REFERRALS PAGE -->
+    <div id="view-team" class="page-view">
+        <div class="app-header"><div class="brand-title">MY TEAM DISPATCH</div></div>
+        <div class="list-group-item" style="background: var(--blue-card); text-align: center; flex-direction: column; gap: 10px;">
+            <span style="color: var(--text-muted); font-size: 0.85rem;">YOUR INVITE CODE</span>
+            <div style="font-size: 1.8rem; font-weight: 900; color: #fff;" id="invite-code-display">6391524</div>
         </div>
     </div>
 
-
-    <!-- DYNAMIC CORE TAB: TEAM -->
-    <div id="tab-team" class="tab-content">
-        <div class="app-header"><div class="brand-title">MY COMMISSIONS</div></div>
+    <!-- VIEW 4: WALLET MANAGEMENT AND PROFILE SETTINGS PAGE -->
+    <div id="view-wallet" class="page-view">
+        <div class="app-header"><div class="brand-title">MY ACCOUNT WALLET</div></div>
+        <div class="list-group-item">
+            <div>Available Balance</div>
+            <div style="font-size: 1.3rem; font-weight: bold; color: var(--text-gold);" class="wallet-lbl">UGX 0</div>
+        </div>
         
-        <div class="fast-start-banner" style="text-align: center;">
-            <div style="font-size: 0.8rem; color: var(--text-gold);">YOUR EXCLUSIVE INVITE CODE</div>
-            <div style="font-size: 1.5rem; font-weight: 800; color: #fff; margin: 4px 0;" id="invite-code-hook">000000</div>
-            <button class="action-inline-btn" onclick="navigator.clipboard.writeText(document.getElementById('invite-code-hook').innerText); alert('Copied referral code!');">Copy Code</button>
+        <div class="list-group-item">
+            <span>Link Payment Phone:</span>
+            <strong class="user-phone">0700000000</strong>
         </div>
 
-        <div class="commission-flex">
-            <div class="com-card l1">
-                <div class="level-badge">L1</div>
-                <div class="com-desc">Direct instant commission on deposits made by your personal referrals.</div>
-                <div class="com-rate">20%</div>
-            </div>
-            <div class="com-card l2">
-                <div class="level-badge">L2</div>
-                <div class="com-desc">Second level for deposits made by members invited by your direct team.</div>
-                <div class="com-rate">2%</div>
-            </div>
-            <div class="com-card l3">
-                <div class="level-badge">L3</div>
-                <div class="com-desc">Third level additional passive income from depth of network.</div>
-                <div class="com-rate">1%</div>
-            </div>
+        <div style="padding: 15px;">
+            <button class="btn-action" style="width:100%; padding:12px; font-size:1rem; background: var(--gold-gradient); color:#000; font-weight:bold; border-radius:8px;" onclick="window.location.href='/login.html'">Sign Out of Session</button>
         </div>
     </div>
 
+    <!-- PERSISTENT STICKY FOOTER MENUS CONTAINER -->
+    <div class="bottom-nav-bar">
+        <div class="nav-item active-nav" id="btn-nav-home" onclick="switchRoute('view-home', this)">
+            <span class="icon">🧱</span><span>Home</span>
+        </div>
+        <div class="nav-item" id="btn-nav-orders" onclick="switchRoute('view-orders', this)">
+            <span class="icon">📈</span><span>Order</span>
+        </div>
+        <div class="nav-item" id="btn-nav-team" onclick="switchRoute('view-team', this)">
+            <span class="icon">👥</span><span>Team</span>
+        </div>
+        <div class="nav-item" id="btn-nav-wallet" onclick="switchRoute('view-wallet', this)">
+            <span class="icon">👤</span><span>Me</span>
+        </div>
+    </div>
 
-    <!-- DYNAMIC CORE TAB: WALLET -->
-    <div id="tab-wallet" class="tab-content">
-        <div class="app-header"><div class="brand-title">ACCOUNT WALLET</div></div>
-        
-        <div class="fast-start-banner" style="background: var(--blue-card);">
-            <div style="color: var(--text-muted); font-size: 0.85rem;">Available Balance</div>
-            <div style="font-size: 1.8rem; font-weight: 800; color: #fff; margin: 5px 0;" class="wallet-balance-txt">UGX 0</div>
-            
-            <div style="d
+    <script>
+        function switchRoute(targetViewId, navElement) {
+            // Toggle Content Panels Visibility
+            document.querySelectorAll('.page-view').forEach(view => view.classList.remove('active-view'));
+            document.getElementById(targetViewId).classList.add('active-view');
+
+            // Synchronize Highlights across Bottom Navigation
+            if(navElement) {
+                document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active-nav'));
+                navElement.classList.add('active-nav');
+            }
+        }
+
+        async function refreshUserCoreSession() {
+            try {
+                const res = await fetch('/api/user/profile');
+                if(!res.ok) { window.location.href = '/login.html'; return; }
+                const data = await res.json();
+
+                // Assign text tokens directly to layout selectors safely
+                document.querySelectorAll('.wallet-lbl').forEach(el => el.innerText = `UGX ${parseFloat(data.balance || 0).toLocaleString()}`);
+                document.querySelectorAll('.commission-lbl').forEach(el => el.innerText = `UGX ${parseFloat(data.commission || 0).toLocaleString()}`);
+                document.querySelectorAll('.user-phone').forEach(el => el.innerText = data.phone);
+                document.getElementById('invite-code-display').innerText = data.invitation_code || '6391524';
+
+                // Setup Machine Layouts Data Loops
+                const container = document.getElementById('orders-mount-container');
+                const emptyMsg = document.getElementById('empty-orders-state');
+                container.innerHTML = '';
+                
+                if(data.orders && data.orders.length > 0) {
+                    emptyMsg.style.display = 'none';
+                    data.orders.forEach(order => {
+                        const div = document.createElement('div');
+                        div.className = 'list-group-item';
+                        div.innerHTML = `<div><strong>${order.product_name}</strong><br><small style="color:var(--text-muted)">Daily Yield: UGX ${order.daily_income}</small></div><span style="color:#2ed573">● Processing</span>`;
+                        container.appendChild(div);
+                    });
+                } else {
+                    emptyMsg.style.display = 'block';
+                }
+
+            } catch (err) {
+                window.location.href = '/login.html';
+            }
+        }
+
+        async function buyProduct(name, price, dailyIncome) {
+            if(!confirm(`Confirm authorization to invest UGX ${price.toLocaleString()}?`)) return;
+            const res = await fetch('/api/user/buy-product', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({ productName: name, price, dailyIncome })
+            });
+            const data = await res.json();
+            alert(data.message);
+            refreshUserCoreSession();
+        }
+
+        window.onload = refreshUserCoreSession;
+    </script>
+</body>
+                </html>
+
