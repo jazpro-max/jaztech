@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Akuo Clone</title>
-    <!-- Google Fonts & Tailwind CSS for modern layout -->
+    <title>Mobile Platform Template</title>
+    <!-- Tailwind CSS & Icon sets -->
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -13,7 +13,6 @@
             font-family: 'Poppins', sans-serif;
             background-color: #f3f4f6;
         }
-        /* Custom scrollbar hiding for app-like feeling */
         ::-webkit-scrollbar {
             display: none;
         }
@@ -27,258 +26,261 @@
 </head>
 <body class="flex justify-center items-center min-h-screen bg-gray-100">
 
-    <!-- Mobile Device Container -->
+    <!-- Mobile Screen Wrapper -->
     <div class="w-full max-w-md bg-white min-h-screen shadow-2xl flex flex-col relative pb-20 overflow-x-hidden">
         
-        <!-- ================= MARQUEE (WITHDRAW PROOFS) ================= -->
-        <div class="bg-yellow-100 text-yellow-800 text-xs py-2 px-3 border-b border-yellow-200 flex items-center overflow-hidden whitespace-nowrap">
-            <span class="font-bold mr-2 flex items-center"><i class="fa-solid fa-bullhorn mr-1 text-yellow-600 animate-bounce"></i> Notice:</span>
+        <!-- ================= DYNAMIC MARQUEE (LIVE TICKER) ================= -->
+        <div class="bg-blue-50 text-blue-800 text-xs py-2 px-3 border-b border-blue-100 flex items-center overflow-hidden whitespace-nowrap">
+            <span class="font-bold mr-2 flex items-center"><i class="fa-solid fa-bullhorn mr-1 text-blue-600 animate-pulse"></i> Updates:</span>
             <marquee behavior="scroll" direction="left" class="w-full" scrollamount="4">
-                🎉 User 25670***818 successfully withdrew 150,000 UGX! | 🎉 User 25675***402 successfully withdrew 50,000 UGX! | 🎉 User 25678***119 successfully withdrew 900,000 UGX! | 🎉 User 25677***330 successfully withdrew 30,000 UGX!
+                Notification: Member ID ****432 recently completed a successful cycle payout. | Announcement: Premium packages are now updated with competitive yield splits. | Notice: Please review your profile security credentials periodically.
             </marquee>
         </div>
 
-        <!-- ================= HOME PAGE ================= -->
+        <!-- ================= HOME TAB ================= -->
         <div id="home-page" class="page active px-4 pt-4">
-            <!-- Brand Logo Header -->
-            <div class="flex flex-col items-center mb-4">
+            <!-- Universal Branding Header Placeholder -->
+            <div class="flex flex-col items-center mb-5">
                 <div class="flex items-center space-x-2">
-                    <div class="w-10 h-10 bg-[#7CB342] rounded-full flex items-center justify-center text-white font-extrabold text-xl italic">a</div>
-                    <span class="text-3xl font-extrabold text-gray-800 tracking-tight">akuo</span>
+                    <div class="w-9 h-9 bg-emerald-600 rounded-xl flex items-center justify-center text-white font-bold text-lg"><i class="fa-solid fa-chart-line"></i></div>
+                    <span class="text-2xl font-bold text-gray-800 tracking-tight">PLATFORM</span>
                 </div>
-                <p class="text-[10px] text-gray-500 uppercase tracking-widest mt-1">Entrepreneurs by nature</p>
+                <p class="text-[9px] text-gray-400 uppercase tracking-widest mt-1">Digital Asset Ecosystem</p>
             </div>
 
-            <!-- Main Quick Menu Buttons -->
-            <div class="grid grid-cols-4 gap-2 mb-4">
-                <button onclick="switchTab('product')" class="bg-[#81C784]/20 hover:bg-[#81C784]/30 p-3 rounded-xl flex flex-col items-center justify-center transition">
-                    <div class="bg-[#7CB342] text-white p-2 rounded-lg mb-1 w-8 h-8 flex items-center justify-center"><i class="fa-solid fa-cube"></i></div>
-                    <span class="text-[10px] font-semibold text-gray-700">My Product</span>
+            <!-- Quick Action Grid Link Grid -->
+            <div class="grid grid-cols-4 gap-2.5 mb-5">
+                <button onclick="switchTab('product')" class="bg-gray-50 hover:bg-gray-100 p-3 rounded-xl flex flex-col items-center justify-center border border-gray-100 transition">
+                    <div class="bg-emerald-600 text-white p-2 rounded-lg mb-1 w-8 h-8 flex items-center justify-center text-xs"><i class="fa-solid fa-layer-group"></i></div>
+                    <span class="text-[10px] font-medium text-gray-600">Catalog</span>
                 </button>
-                <button onclick="switchTab('my')" class="bg-[#81C784]/20 hover:bg-[#81C784]/30 p-3 rounded-xl flex flex-col items-center justify-center transition">
-                    <div class="bg-[#7CB342] text-white p-2 rounded-lg mb-1 w-8 h-8 flex items-center justify-center"><i class="fa-solid fa-users"></i></div>
-                    <span class="text-[10px] font-semibold text-gray-700">My Team</span>
+                <button onclick="switchTab('my')" class="bg-gray-50 hover:bg-gray-100 p-3 rounded-xl flex flex-col items-center justify-center border border-gray-100 transition">
+                    <div class="bg-emerald-600 text-white p-2 rounded-lg mb-1 w-8 h-8 flex items-center justify-center text-xs"><i class="fa-solid fa-users"></i></div>
+                    <span class="text-[10px] font-medium text-gray-600">Network</span>
                 </button>
-                <button onclick="switchTab('my')" class="bg-[#81C784]/20 hover:bg-[#81C784]/30 p-3 rounded-xl flex flex-col items-center justify-center transition">
-                    <div class="bg-[#7CB342] text-white p-2 rounded-lg mb-1 w-8 h-8 flex items-center justify-center"><i class="fa-solid fa-envelope"></i></div>
-                    <span class="text-[10px] font-semibold text-gray-700">Invite Friends</span>
+                <button onclick="switchTab('my')" class="bg-gray-50 hover:bg-gray-100 p-3 rounded-xl flex flex-col items-center justify-center border border-gray-100 transition">
+                    <div class="bg-emerald-600 text-white p-2 rounded-lg mb-1 w-8 h-8 flex items-center justify-center text-xs"><i class="fa-solid fa-share-nodes"></i></div>
+                    <span class="text-[10px] font-medium text-gray-600">Affiliate</span>
                 </button>
-                <button onclick="switchTab('wallet')" class="bg-[#81C784]/20 hover:bg-[#81C784]/30 p-3 rounded-xl flex flex-col items-center justify-center transition">
-                    <div class="bg-[#7CB342] text-white p-2 rounded-lg mb-1 w-8 h-8 flex items-center justify-center"><i class="fa-solid fa-wallet"></i></div>
-                    <span class="text-[10px] font-semibold text-gray-700">Exchange</span>
+                <button onclick="switchTab('wallet')" class="bg-gray-50 hover:bg-gray-100 p-3 rounded-xl flex flex-col items-center justify-center border border-gray-100 transition">
+                    <div class="bg-emerald-600 text-white p-2 rounded-lg mb-1 w-8 h-8 flex items-center justify-center text-xs"><i class="fa-solid fa-arrow-right-arrow-left"></i></div>
+                    <span class="text-[10px] font-medium text-gray-600">Swap</span>
                 </button>
             </div>
 
-            <!-- Banner Section -->
-            <div class="relative rounded-2xl overflow-hidden mb-5 h-44 shadow-lg bg-gradient-to-r from-emerald-800 to-teal-700 text-white p-5 flex flex-col justify-end">
-                <div class="absolute inset-0 bg-cover bg-center opacity-40" style="background-image: url('https://images.unsplash.com/photo-1466611653911-95081537e5b7?auto=format&fit=crop&q=80&w=600');"></div>
+            <!-- Generic Promotional Hero Banner Card -->
+            <div class="relative rounded-2xl overflow-hidden mb-5 h-40 shadow-sm bg-gradient-to-br from-slate-800 to-slate-950 text-white p-5 flex flex-col justify-end">
                 <div class="relative z-10">
-                    <span class="bg-[#7CB342] text-white text-[10px] font-bold px-2 py-0.5 rounded-full uppercase">Project Gatinais I & II</span>
-                    <h2 class="text-xl font-bold mt-1">Solar & Wind Farming</h2>
-                    <p class="text-[11px] text-gray-200">Invest today for a cleaner and wealthier future.</p>
+                    <span class="bg-emerald-600 text-white text-[9px] font-bold px-2 py-0.5 rounded-md uppercase tracking-wider">Featured Campaign</span>
+                    <h2 class="text-lg font-bold mt-1">Explore High-Yield Tiers</h2>
+                    <p class="text-[11px] text-gray-400">Review flexible terms and customized yield distributions.</p>
                 </div>
             </div>
 
-            <!-- Recharge and Withdraw Core Buttons -->
+            <!-- Transaction Utility Bar Links -->
             <div class="grid grid-cols-2 gap-3 mb-6">
-                <button onclick="switchTab('wallet')" class="bg-[#7CB342] hover:bg-[#689F38] text-white font-bold py-3 rounded-xl shadow-md transition flex items-center justify-center gap-2">
-                    <i class="fa-solid fa-wallet"></i> Recharge
+                <button onclick="switchTab('wallet')" class="bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold py-3 rounded-xl shadow-sm transition flex items-center justify-center gap-2">
+                    <i class="fa-solid fa-circle-plus"></i> Add Funds
                 </button>
-                <button onclick="switchTab('wallet')" class="bg-orange-500 hover:bg-orange-600 text-white font-bold py-3 rounded-xl shadow-md transition flex items-center justify-center gap-2">
-                    <i class="fa-solid fa-paper-plane"></i> Withdraw
+                <button onclick="switchTab('wallet')" class="bg-amber-600 hover:bg-amber-700 text-white text-xs font-bold py-3 rounded-xl shadow-sm transition flex items-center justify-center gap-2">
+                    <i class="fa-solid fa-circle-minus"></i> Request Payout
                 </button>
             </div>
 
-            <!-- Hot Products Label -->
+            <!-- Secondary Heading -->
             <div class="flex items-center space-x-2 mb-3">
-                <div class="w-1.5 h-4 bg-[#7CB342] rounded-full"></div>
-                <h3 class="font-bold text-gray-800 text-sm tracking-wide">HOT PRODUCTS</h3>
+                <div class="w-1 h-3.5 bg-emerald-600 rounded-full"></div>
+                <h3 class="font-bold text-gray-800 text-xs tracking-wider uppercase">Promoted Items</h3>
             </div>
 
-            <!-- Hot Product Item -->
-            <div class="bg-[#E8F5E9] rounded-2xl p-4 mb-4 border border-[#C8E6C9] flex gap-3 shadow-sm">
-                <img src="https://images.unsplash.com/photo-1509391366360-2e959784a276?auto=format&fit=crop&q=80&w=200" class="w-20 h-20 rounded-xl object-cover bg-white" alt="Solar Panel">
+            <!-- Placeholder List Item Card -->
+            <div class="bg-emerald-50/50 rounded-2xl p-4 mb-4 border border-emerald-100/60 flex gap-3">
+                <div class="w-16 h-16 rounded-xl bg-emerald-600/10 border border-emerald-200/50 flex items-center justify-center text-emerald-700"><i class="fa-solid fa-box-open text-xl"></i></div>
                 <div class="flex-1">
                     <div class="flex justify-between items-center mb-1">
-                        <span class="bg-[#7CB342] text-white font-bold text-xs px-2 py-0.5 rounded-full">A-1D</span>
-                        <span class="text-xs font-bold text-[#7CB342]">190.0% Return</span>
+                        <span class="text-gray-800 font-bold text-xs">Tier Option A</span>
+                        <span class="text-[11px] font-bold text-emerald-600">Est. 150% Yield</span>
                     </div>
-                    <div class="grid grid-cols-2 gap-1 text-[11px] text-gray-600">
-                        <div>Price: <span class="font-bold text-gray-800">30,000.00 UGX</span></div>
-                        <div>Day Income: <span class="font-bold text-emerald-600">1,140.00 UGX</span></div>
-                        <div>Cycles: <span class="font-bold text-gray-800">50 Days</span></div>
-                        <div>Total Income: <span class="font-bold text-gray-800">57,000.00 UGX</span></div>
+                    <div class="grid grid-cols-2 gap-x-2 gap-y-0.5 text-[10px] text-gray-500">
+                        <div>Value: <span class="font-medium text-gray-700">100.00 Units</span></div>
+                        <div>Term Rate: <span class="font-medium text-gray-700">1.50 Daily</span></div>
+                        <div>Period: <span class="font-medium text-gray-700">30 Cycles</span></div>
+                        <div>Total Return: <span class="font-medium text-gray-700">145.00 Units</span></div>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- ================= PRODUCT PAGE ================= -->
+        <!-- ================= PRODUCT CATALOG TAB (WITH LIVE UPLOADER) ================= -->
         <div id="product-page" class="page px-4 pt-4">
-            <h2 class="text-xl font-bold text-gray-800 mb-4 text-center">Solar Energy Products</h2>
+            <h2 class="text-lg font-bold text-gray-800 mb-4 text-center">Active Inventories</h2>
             
-            <!-- Dynamic Product List Container -->
+            <!-- Target container where uploaded/created items render live -->
             <div id="dynamic-product-list" class="space-y-4 mb-6">
-                <!-- Product A-2D -->
-                <div class="bg-[#E8F5E9] rounded-2xl p-4 border border-[#C8E6C9] shadow-sm">
+                <!-- Static Sample Core Component Style -->
+                <div class="bg-emerald-50/40 rounded-2xl p-4 border border-emerald-100/60 shadow-sm">
                     <div class="flex gap-3 mb-3">
-                        <img src="https://images.unsplash.com/photo-1509391366360-2e959784a276?auto=format&fit=crop&q=80&w=200" class="w-20 h-20 rounded-xl object-cover bg-white" alt="Solar">
+                        <div class="w-16 h-16 rounded-xl bg-emerald-600/10 border border-emerald-200/50 flex items-center justify-center text-emerald-700 shrink-0"><i class="fa-solid fa-cubes text-xl"></i></div>
                         <div class="flex-1">
                             <div class="flex justify-between items-center mb-1">
-                                <span class="bg-[#7CB342] text-white font-bold text-xs px-3 py-0.5 rounded-full">A-2D</span>
-                                <span class="text-xs font-bold text-[#7CB342]">204.0%</span>
+                                <span class="bg-emerald-600 text-white font-bold text-[10px] px-2 py-0.5 rounded-md">Sample-01</span>
+                                <span class="text-xs font-bold text-emerald-600">Core Architecture</span>
                             </div>
-                            <div class="text-sm text-gray-700">Price: <span class="font-extrabold">90,000.00 UGX</span></div>
-                            <div class="text-xs text-gray-500">Cycles: <span class="font-medium">51 Days</span></div>
+                            <div class="text-xs text-gray-700">Entry Matrix: <span class="font-bold">500.00 Val</span></div>
+                            <div class="text-[11px] text-gray-400">Duration Limit: <span class="font-medium">45 Cycles</span></div>
                         </div>
                     </div>
                     <div class="grid grid-cols-2 gap-2 text-xs">
-                        <div class="bg-white p-2 rounded-xl text-center"><p class="text-[10px] text-gray-400 font-bold">DAY INCOME</p><p class="text-emerald-600 font-bold">3,600.00 UGX</p></div>
-                        <div class="bg-white p-2 rounded-xl text-center"><p class="text-[10px] text-gray-400 font-bold">TOTAL INCOME</p><p class="text-gray-800 font-bold">183,600.00 UGX</p></div>
-                    </div>
-                </div>
-
-                <!-- Product A-3D -->
-                <div class="bg-[#E8F5E9] rounded-2xl p-4 border border-[#C8E6C9] shadow-sm">
-                    <div class="flex gap-3 mb-3">
-                        <img src="https://images.unsplash.com/photo-1508514177221-188b1cf16e9d?auto=format&fit=crop&q=80&w=200" class="w-20 h-20 rounded-xl object-cover bg-white" alt="Solar">
-                        <div class="flex-1">
-                            <div class="flex justify-between items-center mb-1">
-                                <span class="bg-[#7CB342] text-white font-bold text-xs px-3 py-0.5 rounded-full">A-3D</span>
-                                <span class="text-xs font-bold text-[#7CB342]">218.4%</span>
-                            </div>
-                            <div class="text-sm text-gray-700">Price: <span class="font-extrabold">270,000.00 UGX</span></div>
-                            <div class="text-xs text-gray-500">Cycles: <span class="font-medium">52 Days</span></div>
-                        </div>
-                    </div>
-                    <div class="grid grid-cols-2 gap-2 text-xs">
-                        <div class="bg-white p-2 rounded-xl text-center"><p class="text-[10px] text-gray-400 font-bold">DAY INCOME</p><p class="text-emerald-600 font-bold">11,340.00 UGX</p></div>
-                        <div class="bg-white p-2 rounded-xl text-center"><p class="text-[10px] text-gray-400 font-bold">TOTAL INCOME</p><p class="text-gray-800 font-bold">589,680.00 UGX</p></div>
+                        <div class="bg-white p-2 rounded-xl text-center border border-gray-100"><p class="text-[9px] text-gray-400 font-bold uppercase">Incremental Rate</p><p class="text-emerald-600 font-bold">12.00 Val</p></div>
+                        <div class="bg-white p-2 rounded-xl text-center border border-gray-100"><p class="text-[9px] text-gray-400 font-bold uppercase">Total Aggregation</p><p class="text-gray-800 font-bold">540.00 Val</p></div>
                     </div>
                 </div>
             </div>
 
-            <!-- ================= DYNAMIC UPLOAD FORM (ADMIN / PRODUCT INSERTER) ================= -->
-            <div class="bg-white rounded-2xl p-5 border-2 border-dashed border-[#7CB342]/40 bg-slate-50 mb-6 shadow-inner">
-                <h3 class="text-sm font-bold text-gray-800 mb-3 text-center flex items-center justify-center gap-2">
-                    <i class="fa-solid fa-cloud-arrow-up text-[#7CB342]"></i> Upload New Solar Product
+            <!-- LIVE PRODUCT CREATION FORM PANEL -->
+            <div class="bg-slate-50 rounded-2xl p-4 border-2 border-dashed border-gray-200 mb-6">
+                <h3 class="text-xs font-bold text-gray-700 mb-3 text-center uppercase tracking-wider flex items-center justify-center gap-2">
+                    <i class="fa-solid fa-plus-circle text-emerald-600"></i> Add New Record Element
                 </h3>
                 <div class="space-y-3">
                     <div>
-                        <label class="block text-[11px] font-bold text-gray-600 uppercase mb-1">Upload Product Image</label>
-                        <input type="file" id="prodImage" accept="image/*" class="w-full text-xs text-slate-500 file:mr-4 file:py-1.5 file:px-3 file:rounded-md file:border-0 file:text-xs file:font-semibold file:bg-emerald-50 file:text-emerald-700 hover:file:bg-emerald-100 cursor-pointer" />
+                        <label class="block text-[10px] font-bold text-gray-500 uppercase mb-1">Upload Product Image</label>
+                        <input type="file" id="prodImage" accept="image/*" class="w-full text-xs text-slate-500 file:mr-3 file:py-1 file:px-2.5 file:rounded file:border-0 file:text-[11px] file:font-semibold file:bg-gray-200 file:text-gray-700 hover:file:bg-gray-300 cursor-pointer" />
                     </div>
                     <div class="grid grid-cols-2 gap-2">
-                        <input type="text" id="prodName" placeholder="Name (e.g. A-4D)" class="w-full px-3 py-1.5 border border-gray-300 rounded-lg text-xs focus:ring-1 focus:ring-[#7CB342] focus:outline-none">
-                        <input type="number" id="prodPrice" placeholder="Price (UGX)" class="w-full px-3 py-1.5 border border-gray-300 rounded-lg text-xs focus:ring-1 focus:ring-[#7CB342] focus:outline-none">
+                        <input type="text" id="prodName" placeholder="Item Label Name" class="w-full px-3 py-2 border border-gray-200 rounded-lg text-xs focus:ring-1 focus:ring-emerald-500 focus:outline-none">
+                        <input type="number" id="prodPrice" placeholder="Base Cost Value" class="w-full px-3 py-2 border border-gray-200 rounded-lg text-xs focus:ring-1 focus:ring-emerald-500 focus:outline-none">
                     </div>
                     <div class="grid grid-cols-2 gap-2">
-                        <input type="number" id="prodDayIncome" placeholder="Daily Income (UGX)" class="w-full px-3 py-1.5 border border-gray-300 rounded-lg text-xs focus:ring-1 focus:ring-[#7CB342] focus:outline-none">
-                        <input type="number" id="prodCycles" placeholder="Cycles (Days)" class="w-full px-3 py-1.5 border border-gray-300 rounded-lg text-xs focus:ring-1 focus:ring-[#7CB342] focus:outline-none">
+                        <input type="number" id="prodDayIncome" placeholder="Daily Interval Value" class="w-full px-3 py-2 border border-gray-200 rounded-lg text-xs focus:ring-1 focus:ring-emerald-500 focus:outline-none">
+                        <input type="number" id="prodCycles" placeholder="Active Cycles Count" class="w-full px-3 py-2 border border-gray-200 rounded-lg text-xs focus:ring-1 focus:ring-emerald-500 focus:outline-none">
                     </div>
-                    <button onclick="addNewProduct()" class="w-full bg-[#7CB342] text-white font-bold text-xs py-2 rounded-lg hover:bg-[#689F38] transition shadow-md">
-                        Add to Product Catalog
+                    <button onclick="addNewProduct()" class="w-full bg-slate-800 text-white font-bold text-xs py-2 rounded-lg hover:bg-slate-900 transition tracking-wide">
+                        Inject To Dynamic List
                     </button>
                 </div>
             </div>
         </div>
 
-        <!-- ================= MESSAGE PAGE ================= -->
+        <!-- ================= MESSAGES & UPDATES TAB ================= -->
         <div id="message-page" class="page px-4 pt-4">
-            <h2 class="text-xl font-bold text-gray-800 mb-4 text-center">Customer Service</h2>
-            <div class="bg-blue-50 border border-blue-200 rounded-2xl p-4 text-blue-800 text-xs leading-relaxed space-y-3 mb-4 shadow-sm">
-                <div class="flex items-center gap-2 font-bold mb-2">
-                    <span class="w-2.5 h-2.5 bg-blue-500 rounded-full animate-ping"></span>
-                    <span>Official Event Announcement</span>
+            <h2 class="text-lg font-bold text-gray-800 mb-4 text-center">Support Notifications</h2>
+            
+            <div class="bg-slate-50 border border-gray-200 rounded-2xl p-4 text-gray-600 text-xs leading-relaxed space-y-2 mb-4">
+                <div class="flex items-center gap-2 font-bold text-gray-800 mb-1">
+                    <span class="w-2 h-2 bg-emerald-500 rounded-full"></span>
+                    <span>System Parameters</span>
                 </div>
-                <p>🎁 Invite a new user to activate <span class="font-bold">A-1D</span> and instantly receive <span class="font-bold">5,000 UGX</span> referral reward!</p>
-                <p>🎁 Invite to activate <span class="font-bold">A-2D</span> and receive <span class="font-bold">10,000 UGX</span> referral reward + 2 draw tickets.</p>
-                <p class="font-medium">Please invite new members in advance to maximize your lucky draw chances.</p>
+                <p>Ensure that external wallet integrations correspond to the accurate network chain. Deposits submitted to structural conflicts are non-recoverable.</p>
             </div>
             
-            <!-- Chat Simulator UI -->
-            <div class="bg-gray-50 rounded-2xl p-3 border border-gray-200 min-h-[160px] flex flex-col justify-between shadow-inner">
-                <div class="text-[11px] text-gray-400 text-center my-2">Today 00:40:32</div>
+            <!-- Live Simulated Text Area Container -->
+            <div class="bg-gray-50 rounded-2xl p-3 border border-gray-200 min-h-[150px] flex flex-col justify-between">
+                <div class="text-[10px] text-gray-400 text-center mb-2">Automated Ticket Channel</div>
                 <div class="flex gap-2 items-start">
-                    <div class="w-7 h-7 rounded-full bg-[#7CB342] flex items-center justify-center text-white text-xs font-bold">A</div>
-                    <div class="bg-white p-3 rounded-2xl text-xs text-gray-700 border border-gray-200 max-w-[80%]">
-                        How can we help you today? Feel free to ask about your investments, deposits or pending withdrawals.
+                    <div class="w-6 h-6 rounded-md bg-gray-300 flex items-center justify-center text-gray-700 text-[10px] font-bold">SYS</div>
+                    <div class="bg-white p-2.5 rounded-xl text-xs text-gray-600 border border-gray-100 max-w-[80%] shadow-sm">
+                        Welcome to standard user services. Submit queries via standard forms below for automated request queues.
                     </div>
                 </div>
                 <div class="mt-4 flex gap-2">
-                    <input type="text" placeholder="Write a message..." class="w-full text-xs px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-[#7CB342]">
-                    <button class="bg-[#7CB342] text-white px-3 rounded-lg"><i class="fa-solid fa-paper-plane text-xs"></i></button>
+                    <input type="text" placeholder="Inquire item details..." class="w-full text-xs px-3 py-1.5 border border-gray-200 rounded-lg focus:outline-none">
+                    <button class="bg-slate-800 text-white px-3 rounded-lg text-xs"><i class="fa-solid fa-paper-plane"></i></button>
                 </div>
             </div>
         </div>
 
-        <!-- ================= WALLET PAGE ================= -->
+        <!-- ================= WALLET STATEMENT TAB ================= -->
         <div id="wallet-page" class="page px-4 pt-4">
-            <h2 class="text-xl font-bold text-gray-800 mb-4 text-center">Wallet Management</h2>
+            <h2 class="text-lg font-bold text-gray-800 mb-4 text-center">Balance Ledger</h2>
             
-            <!-- Balances Panel -->
-            <div class="bg-[#E8F5E9] rounded-2xl p-5 border border-[#C8E6C9] shadow-sm mb-4 text-center">
-                <p class="text-xs text-gray-500 font-semibold tracking-wider">INCOME WALLET</p>
-                <h1 id="userBalance" class="text-3xl font-extrabold text-gray-800 my-2">0.00 <span class="text-sm">UGX</span></h1>
-                <div class="inline-block bg-white text-xs px-4 py-1.5 rounded-full font-bold text-gray-600 shadow-sm border border-gray-100">
-                    Recharge Balance: <span class="text-[#7CB342]">0.00 UGX</span>
+            <div class="bg-slate-900 text-white rounded-2xl p-5 shadow-sm mb-4 text-center">
+                <p class="text-[10px] text-gray-400 font-bold tracking-widest uppercase">Available Portfolio Matrix</p>
+                <h1 class="text-2xl font-extrabold my-1.5 text-emerald-400">0.00 <span class="text-xs text-white font-normal">Credits</span></h1>
+                <div class="inline-block bg-white/10 text-[10px] px-3 py-1 rounded-full font-medium text-gray-300">
+                    Escrow Locked Balance: 0.00
                 </div>
             </div>
 
-            <!-- Transaction Actions -->
-            <div class="grid grid-cols-2 gap-3 mb-6">
-                <button class="bg-white border border-gray-200 p-3 rounded-xl shadow-sm text-center font-bold text-xs text-gray-700 hover:bg-slate-50 transition">
-                    <i class="fa-solid fa-history text-emerald-600 mb-1 block text-lg"></i> Withdrawal History
+            <div class="grid grid-cols-2 gap-3 mb-5">
+                <button class="bg-white border border-gray-100 p-3 rounded-xl shadow-sm text-center text-xs font-semibold text-gray-600 hover:bg-slate-50">
+                    <i class="fa-solid fa-clock-rotate-left text-gray-400 mb-1 block text-base"></i> Historical Logs
                 </button>
-                <button class="bg-white border border-gray-200 p-3 rounded-xl shadow-sm text-center font-bold text-xs text-gray-700 hover:bg-slate-50 transition">
-                    <i class="fa-solid fa-receipt text-orange-600 mb-1 block text-lg"></i> Fund History
+                <button class="bg-white border border-gray-100 p-3 rounded-xl shadow-sm text-center text-xs font-semibold text-gray-600 hover:bg-slate-50">
+                    <i class="fa-solid fa-file-invoice-dollar text-gray-400 mb-1 block text-base"></i> Activity Audits
                 </button>
             </div>
 
-            <!-- Quick Stats -->
-            <div class="grid grid-cols-2 gap-2 mb-4">
-                <div class="bg-[#E8F5E9]/50 p-3 rounded-xl border border-[#C8E6C9] text-center">
-                    <p class="text-[9px] text-gray-500 font-bold uppercase">Today's Income</p>
-                    <p class="text-sm font-bold text-gray-800">0.00 UGX</p>
+            <div class="grid grid-cols-2 gap-2 text-[11px]">
+                <div class="bg-gray-50 p-2.5 rounded-xl border border-gray-100">
+                    <span class="block text-gray-400 text-[9px] font-bold uppercase">Interval Ingress</span>
+                    <span class="font-bold text-gray-700">0.00 Units</span>
                 </div>
-                <div class="bg-[#E8F5E9]/50 p-3 rounded-xl border border-[#C8E6C9] text-center">
-                    <p class="text-[9px] text-gray-500 font-bold uppercase">Total Income</p>
-                    <p class="text-sm font-bold text-gray-800">0.00 UGX</p>
-                </div>
-                <div class="bg-[#E8F5E9]/50 p-3 rounded-xl border border-[#C8E6C9] text-center">
-                    <p class="text-[9px] text-gray-500 font-bold uppercase">Total Recharge</p>
-                    <p class="text-sm font-bold text-gray-800">0.00 UGX</p>
-                </div>
-                <div class="bg-[#E8F5E9]/50 p-3 rounded-xl border border-[#C8E6C9] text-center">
-                    <p class="text-[9px] text-gray-500 font-bold uppercase">Total Withdrawal</p>
-                    <p class="text-sm font-bold text-gray-800">0.00 UGX</p>
+                <div class="bg-gray-50 p-2.5 rounded-xl border border-gray-100">
+                    <span class="block text-gray-400 text-[9px] font-bold uppercase">Aggregate Outflow</span>
+                    <span class="font-bold text-gray-700">0.00 Units</span>
                 </div>
             </div>
         </div>
 
-        <!-- ================= PROFILE ("MY") PAGE ================= -->
+        <!-- ================= PROFILE ("MY") TAB ================= -->
         <div id="my-page" class="page px-4 pt-4">
-            <!-- User Head Banner -->
-            <div class="flex items-center gap-4 bg-[#E8F5E9]/50 p-4 rounded-2xl border border-[#C8E6C9] mb-4">
-                <div class="w-14 h-14 bg-[#7CB342] rounded-full border-2 border-white shadow-md flex items-center justify-center text-white text-2xl font-bold">
-                    <i class="fa-solid fa-user"></i>
+            <div class="flex items-center gap-3 bg-gray-50 p-4 rounded-2xl border border-gray-100 mb-4">
+                <div class="w-12 h-12 bg-gray-200 rounded-xl flex items-center justify-center text-gray-500 text-lg">
+                    <i class="fa-solid fa-user-gear"></i>
                 </div>
                 <div>
-                    <h3 class="text-base font-extrabold text-gray-800">700371818</h3>
-                    <div class="flex gap-2 mt-1">
-                        <span class="bg-orange-500 text-white text-[9px] font-bold px-2 py-0.5 rounded-full flex items-center gap-1">
-                            <i class="fa-solid fa-gem"></i> VIP0
-                        </span>
-                        <span class="text-[10px] text-gray-500 font-medium self-center">Next: VIP1</span>
-                    </div>
+                    <h3 class="text-sm font-bold text-gray-800">Account Profile Terminal</h3>
+                    <span class="bg-gray-200 text-gray-700 text-[9px] font-bold px-2 py-0.5 rounded uppercase mt-0.5 inline-block">Tier 0 Base</span>
                 </div>
             </div>
 
-            <!-- Informational Banner -->
-            <div class="bg-emerald-500 text-white text-xs p-3 rounded-xl mb-5 flex items-center gap-2 shadow-sm">
-                <i class="fa-solid fa-shield-halved"></i>
-                <span>Rent any product to unlock and become <strong>VIP1</strong></span>
+            <!-- Menu Navigation Mock Settings Router Links -->
+            <div class="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden divide-y divide-gray-50">
+                <a href="#" class="flex justify-between items-center p-3 hover:bg-slate-50 text-xs text-gray-600">
+                    <span class="flex items-center gap-2"><i class="fa-solid fa-user-shield text-gray-400"></i> Verification Services</span>
+                    <i class="fa-solid fa-chevron-right text-[10px] text-gray-300"></i>
+                </a>
+                <a href="#" class="flex justify-between items-center p-3 hover:bg-slate-50 text-xs text-gray-600">
+                    <span class="flex items-center gap-2"><i class="fa-solid fa-wallet text-gray-400"></i> Disbursal Settings</span>
+                    <i class="fa-solid fa-chevron-right text-[10px] text-gray-300"></i>
+                </a>
+                <a href="#" class="flex justify-between items-center p-3 hover:bg-slate-50 text-xs text-gray-600">
+                    <span class="flex items-center gap-2"><i class="fa-solid fa-gears text-gray-400"></i> System Configuration</span>
+                    <i class="fa-solid fa-chevron-right text-[10px] text-gray-300"></i>
+                </a>
             </div>
+        </div>
 
-            <!-- Option Lists -->
-            <div class="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden mb-4 divide
+        <!-- ================= FIXED BOTTOM TAB NAVIGATION BAR ================= -->
+        <div class="absolute bottom-0 left-0 right-0 h-16 bg-white border-t border-gray-100 flex justify-around items-center z-50">
+            <button onclick="switchTab('home')" id="tab-home" class="flex flex-col items-center justify-center text-emerald-600">
+                <i class="fa-solid fa-house text-base"></i>
+                <span class="text-[9px] mt-0.5 font-bold">Home</span>
+            </button>
+            <button onclick="switchTab('product')" id="tab-product" class="flex flex-col items-center justify-center text-gray-400">
+                <i class="fa-solid fa-layer-group text-base"></i>
+                <span class="text-[9px] mt-0.5">Catalog</span>
+            </button>
+            <button onclick="switchTab('message')" id="tab-message" class="flex flex-col items-center justify-center text-gray-400">
+                <i class="fa-solid fa-comment-dots text-base"></i>
+                <span class="text-[9px] mt-0.5">Tickets</span>
+            </button>
+            <button onclick="switchTab('wallet')" id="tab-wallet" class="flex flex-col items-center justify-center text-gray-400">
+                <i class="fa-solid fa-wallet text-base"></i>
+                <span class="text-[9px] mt-0.5">Ledger</span>
+            </button>
+            <button onclick="switchTab('my')" id="tab-my" class="flex flex-col items-center justify-center text-gray-400">
+                <i class="fa-solid fa-user-gear text-base"></i>
+                <span class="text-[9px] mt-0.5">Identity</span>
+            </button>
+        </div>
+
+    </div>
+
+    <!-- Frontend Router & Image Processing Event Scripts -->
+    <script>
+        // SPA View Swapping Engine
+        function switchTab(pageId) {
+            document.querySelectorAll('.page').forEach(page => page.classList.remove('active'));
+            document.getEleme
