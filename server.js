@@ -1,3 +1,37 @@
+// Safely load .env file in development without crashing production
+try {
+  require('dotenv').config();
+} catch (e) {
+  console.log('Running without local .env file');
+}
+
+const express = require('express');
+const { Pool } = require('pg');
+
+const app = express();
+app.use(express.json());
+
+// PostgreSQL Connection
+const pool = new Pool({
+  connectionString: process.env.DATABASE_URL,
+  ssl: process.env.DATABASE_URL && !process.env.DATABASE_URL.includes('localhost') 
+    ? { rejectUnauthorized: false } 
+    : false
+});
+
+pool.connect((err, client, release) => {
+  if (err) {
+    console.error('Database connection error:', err.stack);
+  } else {
+    console.log('PostgreSQL connected successfully!');
+    release();
+  }
+});
+
+const PORT = process.env.PORT || 10000;
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
+});
 // ===============================
 // IMPORTS
 // ===============================
