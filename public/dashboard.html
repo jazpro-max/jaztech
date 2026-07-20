@@ -3,284 +3,78 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mobile Platform Template</title>
-    <!-- Tailwind CSS & Icon sets -->
+    <title>Jaztech Shopping - Mobile Dashboard</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        body {
-            font-family: 'Poppins', sans-serif;
-            background-color: #f3f4f6;
-        }
-        ::-webkit-scrollbar {
-            display: none;
-        }
-        .page {
-            display: none;
-        }
-        .page.active {
-            display: block;
-        }
+        body { font-family: 'Poppins', sans-serif; background-color: #f3f4f6; }
+        ::-webkit-scrollbar { display: none; }
+        .content-frame { width: 100%; border: none; height: calc(100vh - 120px); }
     </style>
 </head>
 <body class="flex justify-center items-center min-h-screen bg-gray-100">
 
-    <!-- Mobile Screen Wrapper -->
-    <div class="w-full max-w-md bg-white min-h-screen shadow-2xl flex flex-col relative pb-20 overflow-x-hidden">
+    <!-- Mobile Wrapper -->
+    <div class="w-full max-w-md bg-white min-h-screen shadow-2xl flex flex-col relative pb-16 overflow-hidden">
         
-        <!-- ================= DYNAMIC MARQUEE (LIVE TICKER) ================= -->
-        <div class="bg-blue-50 text-blue-800 text-xs py-2 px-3 border-b border-blue-100 flex items-center overflow-hidden whitespace-nowrap">
-            <span class="font-bold mr-2 flex items-center"><i class="fa-solid fa-bullhorn mr-1 text-blue-600 animate-pulse"></i> Updates:</span>
+        <!-- TOP MARQUEE HEADER -->
+        <div class="bg-emerald-50 text-emerald-800 text-xs py-2 px-3 border-b border-emerald-100 flex items-center shrink-0">
+            <span class="font-bold mr-2 flex items-center shrink-0"><i class="fa-solid fa-bullhorn mr-1 text-emerald-600 animate-pulse"></i> News:</span>
             <marquee behavior="scroll" direction="left" class="w-full" scrollamount="4">
-                Notification: Member ID ****432 recently completed a successful cycle payout. | Announcement: Premium packages are now updated with competitive yield splits. | Notice: Please review your profile security credentials periodically.
+                Welcome to Jaztech Shopping! Check out new catalog packages and earning multipliers in your team network.
             </marquee>
         </div>
 
-        <!-- ================= HOME TAB ================= -->
-        <div id="home-page" class="page active px-4 pt-4">
-            <!-- Universal Branding Header Placeholder -->
-            <div class="flex flex-col items-center mb-5">
-                <div class="flex items-center space-x-2">
-                    <div class="w-9 h-9 bg-emerald-600 rounded-xl flex items-center justify-center text-white font-bold text-lg"><i class="fa-solid fa-chart-line"></i></div>
-                    <span class="text-2xl font-bold text-gray-800 tracking-tight">PLATFORM</span>
-                </div>
-                <p class="text-[9px] text-gray-400 uppercase tracking-widest mt-1">Digital Asset Ecosystem</p>
-            </div>
+        <!-- DYNAMIC PAGE CONTAINER (Loads HTML Pages seamlessly) -->
+        <main class="flex-1 overflow-y-auto" id="main-content">
+            <iframe id="view-frame" src="/order" class="content-frame"></iframe>
+        </main>
 
-            <!-- Quick Action Grid Link Grid -->
-            <div class="grid grid-cols-4 gap-2.5 mb-5">
-                <button onclick="switchTab('product')" class="bg-gray-50 hover:bg-gray-100 p-3 rounded-xl flex flex-col items-center justify-center border border-gray-100 transition">
-                    <div class="bg-emerald-600 text-white p-2 rounded-lg mb-1 w-8 h-8 flex items-center justify-center text-xs"><i class="fa-solid fa-layer-group"></i></div>
-                    <span class="text-[10px] font-medium text-gray-600">Catalog</span>
-                </button>
-                <button onclick="switchTab('my')" class="bg-gray-50 hover:bg-gray-100 p-3 rounded-xl flex flex-col items-center justify-center border border-gray-100 transition">
-                    <div class="bg-emerald-600 text-white p-2 rounded-lg mb-1 w-8 h-8 flex items-center justify-center text-xs"><i class="fa-solid fa-users"></i></div>
-                    <span class="text-[10px] font-medium text-gray-600">Network</span>
-                </button>
-                <button onclick="switchTab('my')" class="bg-gray-50 hover:bg-gray-100 p-3 rounded-xl flex flex-col items-center justify-center border border-gray-100 transition">
-                    <div class="bg-emerald-600 text-white p-2 rounded-lg mb-1 w-8 h-8 flex items-center justify-center text-xs"><i class="fa-solid fa-share-nodes"></i></div>
-                    <span class="text-[10px] font-medium text-gray-600">Affiliate</span>
-                </button>
-                <button onclick="switchTab('wallet')" class="bg-gray-50 hover:bg-gray-100 p-3 rounded-xl flex flex-col items-center justify-center border border-gray-100 transition">
-                    <div class="bg-emerald-600 text-white p-2 rounded-lg mb-1 w-8 h-8 flex items-center justify-center text-xs"><i class="fa-solid fa-arrow-right-arrow-left"></i></div>
-                    <span class="text-[10px] font-medium text-gray-600">Swap</span>
-                </button>
-            </div>
-
-            <!-- Generic Promotional Hero Banner Card -->
-            <div class="relative rounded-2xl overflow-hidden mb-5 h-40 shadow-sm bg-gradient-to-br from-slate-800 to-slate-950 text-white p-5 flex flex-col justify-end">
-                <div class="relative z-10">
-                    <span class="bg-emerald-600 text-white text-[9px] font-bold px-2 py-0.5 rounded-md uppercase tracking-wider">Featured Campaign</span>
-                    <h2 class="text-lg font-bold mt-1">Explore High-Yield Tiers</h2>
-                    <p class="text-[11px] text-gray-400">Review flexible terms and customized yield distributions.</p>
-                </div>
-            </div>
-
-            <!-- Transaction Utility Bar Links -->
-            <div class="grid grid-cols-2 gap-3 mb-6">
-                <button onclick="switchTab('wallet')" class="bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold py-3 rounded-xl shadow-sm transition flex items-center justify-center gap-2">
-                    <i class="fa-solid fa-circle-plus"></i> Add Funds
-                </button>
-                <button onclick="switchTab('wallet')" class="bg-amber-600 hover:bg-amber-700 text-white text-xs font-bold py-3 rounded-xl shadow-sm transition flex items-center justify-center gap-2">
-                    <i class="fa-solid fa-circle-minus"></i> Request Payout
-                </button>
-            </div>
-
-            <!-- Secondary Heading -->
-            <div class="flex items-center space-x-2 mb-3">
-                <div class="w-1 h-3.5 bg-emerald-600 rounded-full"></div>
-                <h3 class="font-bold text-gray-800 text-xs tracking-wider uppercase">Promoted Items</h3>
-            </div>
-
-            <!-- Placeholder List Item Card -->
-            <div class="bg-emerald-50/50 rounded-2xl p-4 mb-4 border border-emerald-100/60 flex gap-3">
-                <div class="w-16 h-16 rounded-xl bg-emerald-600/10 border border-emerald-200/50 flex items-center justify-center text-emerald-700"><i class="fa-solid fa-box-open text-xl"></i></div>
-                <div class="flex-1">
-                    <div class="flex justify-between items-center mb-1">
-                        <span class="text-gray-800 font-bold text-xs">Tier Option A</span>
-                        <span class="text-[11px] font-bold text-emerald-600">Est. 150% Yield</span>
-                    </div>
-                    <div class="grid grid-cols-2 gap-x-2 gap-y-0.5 text-[10px] text-gray-500">
-                        <div>Value: <span class="font-medium text-gray-700">100.00 Units</span></div>
-                        <div>Term Rate: <span class="font-medium text-gray-700">1.50 Daily</span></div>
-                        <div>Period: <span class="font-medium text-gray-700">30 Cycles</span></div>
-                        <div>Total Return: <span class="font-medium text-gray-700">145.00 Units</span></div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- ================= PRODUCT CATALOG TAB (WITH LIVE UPLOADER) ================= -->
-        <div id="product-page" class="page px-4 pt-4">
-            <h2 class="text-lg font-bold text-gray-800 mb-4 text-center">Active Inventories</h2>
-            
-            <!-- Target container where uploaded/created items render live -->
-            <div id="dynamic-product-list" class="space-y-4 mb-6">
-                <!-- Static Sample Core Component Style -->
-                <div class="bg-emerald-50/40 rounded-2xl p-4 border border-emerald-100/60 shadow-sm">
-                    <div class="flex gap-3 mb-3">
-                        <div class="w-16 h-16 rounded-xl bg-emerald-600/10 border border-emerald-200/50 flex items-center justify-center text-emerald-700 shrink-0"><i class="fa-solid fa-cubes text-xl"></i></div>
-                        <div class="flex-1">
-                            <div class="flex justify-between items-center mb-1">
-                                <span class="bg-emerald-600 text-white font-bold text-[10px] px-2 py-0.5 rounded-md">Sample-01</span>
-                                <span class="text-xs font-bold text-emerald-600">Core Architecture</span>
-                            </div>
-                            <div class="text-xs text-gray-700">Entry Matrix: <span class="font-bold">500.00 Val</span></div>
-                            <div class="text-[11px] text-gray-400">Duration Limit: <span class="font-medium">45 Cycles</span></div>
-                        </div>
-                    </div>
-                    <div class="grid grid-cols-2 gap-2 text-xs">
-                        <div class="bg-white p-2 rounded-xl text-center border border-gray-100"><p class="text-[9px] text-gray-400 font-bold uppercase">Incremental Rate</p><p class="text-emerald-600 font-bold">12.00 Val</p></div>
-                        <div class="bg-white p-2 rounded-xl text-center border border-gray-100"><p class="text-[9px] text-gray-400 font-bold uppercase">Total Aggregation</p><p class="text-gray-800 font-bold">540.00 Val</p></div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- LIVE PRODUCT CREATION FORM PANEL -->
-            <div class="bg-slate-50 rounded-2xl p-4 border-2 border-dashed border-gray-200 mb-6">
-                <h3 class="text-xs font-bold text-gray-700 mb-3 text-center uppercase tracking-wider flex items-center justify-center gap-2">
-                    <i class="fa-solid fa-plus-circle text-emerald-600"></i> Add New Record Element
-                </h3>
-                <div class="space-y-3">
-                    <div>
-                        <label class="block text-[10px] font-bold text-gray-500 uppercase mb-1">Upload Product Image</label>
-                        <input type="file" id="prodImage" accept="image/*" class="w-full text-xs text-slate-500 file:mr-3 file:py-1 file:px-2.5 file:rounded file:border-0 file:text-[11px] file:font-semibold file:bg-gray-200 file:text-gray-700 hover:file:bg-gray-300 cursor-pointer" />
-                    </div>
-                    <div class="grid grid-cols-2 gap-2">
-                        <input type="text" id="prodName" placeholder="Item Label Name" class="w-full px-3 py-2 border border-gray-200 rounded-lg text-xs focus:ring-1 focus:ring-emerald-500 focus:outline-none">
-                        <input type="number" id="prodPrice" placeholder="Base Cost Value" class="w-full px-3 py-2 border border-gray-200 rounded-lg text-xs focus:ring-1 focus:ring-emerald-500 focus:outline-none">
-                    </div>
-                    <div class="grid grid-cols-2 gap-2">
-                        <input type="number" id="prodDayIncome" placeholder="Daily Interval Value" class="w-full px-3 py-2 border border-gray-200 rounded-lg text-xs focus:ring-1 focus:ring-emerald-500 focus:outline-none">
-                        <input type="number" id="prodCycles" placeholder="Active Cycles Count" class="w-full px-3 py-2 border border-gray-200 rounded-lg text-xs focus:ring-1 focus:ring-emerald-500 focus:outline-none">
-                    </div>
-                    <button onclick="addNewProduct()" class="w-full bg-slate-800 text-white font-bold text-xs py-2 rounded-lg hover:bg-slate-900 transition tracking-wide">
-                        Inject To Dynamic List
-                    </button>
-                </div>
-            </div>
-        </div>
-
-        <!-- ================= MESSAGES & UPDATES TAB ================= -->
-        <div id="message-page" class="page px-4 pt-4">
-            <h2 class="text-lg font-bold text-gray-800 mb-4 text-center">Support Notifications</h2>
-            
-            <div class="bg-slate-50 border border-gray-200 rounded-2xl p-4 text-gray-600 text-xs leading-relaxed space-y-2 mb-4">
-                <div class="flex items-center gap-2 font-bold text-gray-800 mb-1">
-                    <span class="w-2 h-2 bg-emerald-500 rounded-full"></span>
-                    <span>System Parameters</span>
-                </div>
-                <p>Ensure that external wallet integrations correspond to the accurate network chain. Deposits submitted to structural conflicts are non-recoverable.</p>
-            </div>
-            
-            <!-- Live Simulated Text Area Container -->
-            <div class="bg-gray-50 rounded-2xl p-3 border border-gray-200 min-h-[150px] flex flex-col justify-between">
-                <div class="text-[10px] text-gray-400 text-center mb-2">Automated Ticket Channel</div>
-                <div class="flex gap-2 items-start">
-                    <div class="w-6 h-6 rounded-md bg-gray-300 flex items-center justify-center text-gray-700 text-[10px] font-bold">SYS</div>
-                    <div class="bg-white p-2.5 rounded-xl text-xs text-gray-600 border border-gray-100 max-w-[80%] shadow-sm">
-                        Welcome to standard user services. Submit queries via standard forms below for automated request queues.
-                    </div>
-                </div>
-                <div class="mt-4 flex gap-2">
-                    <input type="text" placeholder="Inquire item details..." class="w-full text-xs px-3 py-1.5 border border-gray-200 rounded-lg focus:outline-none">
-                    <button class="bg-slate-800 text-white px-3 rounded-lg text-xs"><i class="fa-solid fa-paper-plane"></i></button>
-                </div>
-            </div>
-        </div>
-
-        <!-- ================= WALLET STATEMENT TAB ================= -->
-        <div id="wallet-page" class="page px-4 pt-4">
-            <h2 class="text-lg font-bold text-gray-800 mb-4 text-center">Balance Ledger</h2>
-            
-            <div class="bg-slate-900 text-white rounded-2xl p-5 shadow-sm mb-4 text-center">
-                <p class="text-[10px] text-gray-400 font-bold tracking-widest uppercase">Available Portfolio Matrix</p>
-                <h1 class="text-2xl font-extrabold my-1.5 text-emerald-400">0.00 <span class="text-xs text-white font-normal">Credits</span></h1>
-                <div class="inline-block bg-white/10 text-[10px] px-3 py-1 rounded-full font-medium text-gray-300">
-                    Escrow Locked Balance: 0.00
-                </div>
-            </div>
-
-            <div class="grid grid-cols-2 gap-3 mb-5">
-                <button class="bg-white border border-gray-100 p-3 rounded-xl shadow-sm text-center text-xs font-semibold text-gray-600 hover:bg-slate-50">
-                    <i class="fa-solid fa-clock-rotate-left text-gray-400 mb-1 block text-base"></i> Historical Logs
-                </button>
-                <button class="bg-white border border-gray-100 p-3 rounded-xl shadow-sm text-center text-xs font-semibold text-gray-600 hover:bg-slate-50">
-                    <i class="fa-solid fa-file-invoice-dollar text-gray-400 mb-1 block text-base"></i> Activity Audits
-                </button>
-            </div>
-
-            <div class="grid grid-cols-2 gap-2 text-[11px]">
-                <div class="bg-gray-50 p-2.5 rounded-xl border border-gray-100">
-                    <span class="block text-gray-400 text-[9px] font-bold uppercase">Interval Ingress</span>
-                    <span class="font-bold text-gray-700">0.00 Units</span>
-                </div>
-                <div class="bg-gray-50 p-2.5 rounded-xl border border-gray-100">
-                    <span class="block text-gray-400 text-[9px] font-bold uppercase">Aggregate Outflow</span>
-                    <span class="font-bold text-gray-700">0.00 Units</span>
-                </div>
-            </div>
-        </div>
-
-        <!-- ================= PROFILE ("MY") TAB ================= -->
-        <div id="my-page" class="page px-4 pt-4">
-            <div class="flex items-center gap-3 bg-gray-50 p-4 rounded-2xl border border-gray-100 mb-4">
-                <div class="w-12 h-12 bg-gray-200 rounded-xl flex items-center justify-center text-gray-500 text-lg">
-                    <i class="fa-solid fa-user-gear"></i>
-                </div>
-                <div>
-                    <h3 class="text-sm font-bold text-gray-800">Account Profile Terminal</h3>
-                    <span class="bg-gray-200 text-gray-700 text-[9px] font-bold px-2 py-0.5 rounded uppercase mt-0.5 inline-block">Tier 0 Base</span>
-                </div>
-            </div>
-
-            <!-- Menu Navigation Mock Settings Router Links -->
-            <div class="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden divide-y divide-gray-50">
-                <a href="#" class="flex justify-between items-center p-3 hover:bg-slate-50 text-xs text-gray-600">
-                    <span class="flex items-center gap-2"><i class="fa-solid fa-user-shield text-gray-400"></i> Verification Services</span>
-                    <i class="fa-solid fa-chevron-right text-[10px] text-gray-300"></i>
-                </a>
-                <a href="#" class="flex justify-between items-center p-3 hover:bg-slate-50 text-xs text-gray-600">
-                    <span class="flex items-center gap-2"><i class="fa-solid fa-wallet text-gray-400"></i> Disbursal Settings</span>
-                    <i class="fa-solid fa-chevron-right text-[10px] text-gray-300"></i>
-                </a>
-                <a href="#" class="flex justify-between items-center p-3 hover:bg-slate-50 text-xs text-gray-600">
-                    <span class="flex items-center gap-2"><i class="fa-solid fa-gears text-gray-400"></i> System Configuration</span>
-                    <i class="fa-solid fa-chevron-right text-[10px] text-gray-300"></i>
-                </a>
-            </div>
-        </div>
-
-        <!-- ================= FIXED BOTTOM TAB NAVIGATION BAR ================= -->
-        <div class="absolute bottom-0 left-0 right-0 h-16 bg-white border-t border-gray-100 flex justify-around items-center z-50">
-            <button onclick="switchTab('home')" id="tab-home" class="flex flex-col items-center justify-center text-emerald-600">
-                <i class="fa-solid fa-house text-base"></i>
-                <span class="text-[9px] mt-0.5 font-bold">Home</span>
+        <!-- BOTTOM NAVIGATION BAR -->
+        <nav class="absolute bottom-0 left-0 right-0 h-16 bg-white border-t border-gray-100 flex justify-around items-center z-50">
+            <button onclick="navigate('/order', 'tab-order')" id="tab-order" class="nav-btn flex flex-col items-center justify-center text-emerald-600">
+                <i class="fa-solid fa-bag-shopping text-base"></i>
+                <span class="text-[9px] mt-0.5 font-bold">Orders</span>
             </button>
-            <button onclick="switchTab('product')" id="tab-product" class="flex flex-col items-center justify-center text-gray-400">
-                <i class="fa-solid fa-layer-group text-base"></i>
-                <span class="text-[9px] mt-0.5">Catalog</span>
+            <button onclick="navigate('/team', 'tab-team')" id="tab-team" class="nav-btn flex flex-col items-center justify-center text-gray-400">
+                <i class="fa-solid fa-users text-base"></i>
+                <span class="text-[9px] mt-0.5">Team</span>
             </button>
-            <button onclick="switchTab('message')" id="tab-message" class="flex flex-col items-center justify-center text-gray-400">
-                <i class="fa-solid fa-comment-dots text-base"></i>
-                <span class="text-[9px] mt-0.5">Tickets</span>
-            </button>
-            <button onclick="switchTab('wallet')" id="tab-wallet" class="flex flex-col items-center justify-center text-gray-400">
-                <i class="fa-solid fa-wallet text-base"></i>
+            <button onclick="navigate('/transactions', 'tab-tx')" id="tab-tx" class="nav-btn flex flex-col items-center justify-center text-gray-400">
+                <i class="fa-solid fa-arrow-right-arrow-left text-base"></i>
                 <span class="text-[9px] mt-0.5">Ledger</span>
             </button>
-            <button onclick="switchTab('my')" id="tab-my" class="flex flex-col items-center justify-center text-gray-400">
-                <i class="fa-solid fa-user-gear text-base"></i>
-                <span class="text-[9px] mt-0.5">Identity</span>
+            <button onclick="navigate('/notifications', 'tab-notif')" id="tab-notif" class="nav-btn flex flex-col items-center justify-center text-gray-400">
+                <i class="fa-solid fa-bell text-base"></i>
+                <span class="text-[9px] mt-0.5">Alerts</span>
             </button>
-        </div>
+            <button onclick="navigate('/me', 'tab-me')" id="tab-me" class="nav-btn flex flex-col items-center justify-center text-gray-400">
+                <i class="fa-solid fa-user text-base"></i>
+                <span class="text-[9px] mt-0.5">Profile</span>
+            </button>
+        </nav>
 
     </div>
 
-    <!-- Frontend Router & Image Processing Event Scripts -->
     <script>
-        // SPA View Swapping Engine
-        function switchTab(pageId) {
-            document.querySelectorAll('.page').forEach(page => page.classList.remove('active'));
-            document.getEleme
+        function navigate(pageUrl, activeTabId) {
+            document.getElementById('view-frame').src = pageUrl;
+
+            // Highlight Active Nav Button
+            document.querySelectorAll('.nav-btn').forEach(btn => {
+                btn.classList.remove('text-emerald-600');
+                btn.classList.add('text-gray-400');
+                btn.querySelector('span')?.classList.remove('font-bold');
+            });
+
+            const activeBtn = document.getElementById(activeTabId);
+            if (activeBtn) {
+                activeBtn.classList.add('text-emerald-600');
+                activeBtn.classList.remove('text-gray-400');
+                activeBtn.querySelector('span')?.classList.add('font-bold');
+            }
+        }
+    </script>
+</body>
+</html>
