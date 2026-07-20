@@ -4,57 +4,40 @@ const app = express();
 
 const PORT = process.env.PORT || 3000;
 
-// Body parsing middleware
+// Body Parsing
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// 1. Serve static files (CSS, JS, images, and HTML) directly from the 'public' folder
-// Setting extensions: ['html'] lets you visit /order instead of /order.html
+// Serve static directory (Public folder)
 app.use(express.static(path.join(__dirname, 'public'), { extensions: ['html'] }));
 
-// ================= PAGE ROUTES ================= //
+// ================= PAGE ROUTING ================= //
 
-// Default landing / index route
+// Default Main Entry Point (Renamed to index.html)
 app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
-// Main Dashboard route
-app.get('/dashboard', (req, res) => {
-    res.sendFile(path.join(__dirname, 'public', 'dashboard.html'));
+// Explicit Authentication Pages (Full window loads)
+app.get('/login', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'login.html'));
 });
 
-// Admin Panel route
+app.get('/register', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'register.html'));
+});
+
+// Admin Route
 app.get('/admin', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'admin.html'));
 });
 
-// ================= API ENDPOINTS ================= //
-
-app.post('/api/deposit', (req, res) => {
-    const { amount, paymentMethod } = req.body;
-    res.json({ success: true, message: 'Deposit request submitted successfully.' });
-});
-
-app.post('/api/withdraw', (req, res) => {
-    const { amount, walletAddress } = req.body;
-    res.json({ success: true, message: 'Withdrawal request queued.' });
-});
-
-app.get('/api/user-stats', (req, res) => {
-    res.json({
-        balance: 150.00,
-        teamCount: 12,
-        activeOrders: 3
-    });
-});
-
-// Catch-all 404 Handler for missing routes
+// Catch-all 404 Route
 app.use((req, res) => {
     res.status(404).send('404 - Page or Resource Not Found in public directory.');
 });
 
-// Start Server
+// Start Express Server
 app.listen(PORT, () => {
-    console.log(`Server running on port ${PORT}`);
+    console.log(`Server running smoothly on port ${PORT}`);
 });
